@@ -1,9 +1,20 @@
-import React from 'react'
+import { Box, Typography } from "@mui/material";
+import React from "react";
+import {
+  homeWrapperStyle,
+  glowEffectStyle,
+  titleTextStyle,
+} from "../styles/homeStyle";
 
 const Home = () => {
   return (
-    <div>Home</div>
-  )
-}
+    <Box sx={homeWrapperStyle}>
+      <Box sx={glowEffectStyle} />
+      <Typography variant="h3" sx={titleTextStyle}>
+        Hello App
+      </Typography>
+    </Box>
+  );
+};
 
-export default Home
+export default Home;
