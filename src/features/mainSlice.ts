@@ -1,13 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
-const stockSlice = createSlice({
-  name: "stock",
+interface MainState {
+  loading: Boolean,
+  error: Boolean
+}
 
-  initialState: {
-    loading: false,
-    error: false,
-  },
+const initialState: MainState =  {
+  loading: false,
+  error: false,
+}
 
+const mainSlice = createSlice({
+  name: "main",
+  initialState,
   reducers: {
     fetchStart: (state) => {
       state.loading = true
@@ -25,5 +30,5 @@ export const {
   fetchStart,
   fetchFail,
  
-} = stockSlice.actions
-export default stockSlice.reducer
+} = mainSlice.actions
+export default mainSlice.reducer
