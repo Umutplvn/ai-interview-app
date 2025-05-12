@@ -1,19 +1,14 @@
-import { Box, Typography } from "@mui/material";
 import React from "react";
-import {
-  homeWrapperStyle,
-  glowEffectStyle,
-  titleTextStyle,
-} from "../styles/homeStyle";
+import "../styles/homeStyle.css";
 
 const Home = () => {
   return (
-    <Box sx={homeWrapperStyle}>
-      <Box sx={glowEffectStyle} />
-      <Typography variant="h3" sx={titleTextStyle}>
+    <div className="home-wrapper">
+      <div className="glow-effect" />
+      <header className="title-text">
         Hello App
-      </Typography>
-    </Box>
+      </header>
+    </div>
   );
 };
 
