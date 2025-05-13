@@ -17,7 +17,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     setTimeout(() => {
       setImageLoaded(true);
-    }, 300); 
+    }, 300);
   }, []);
 
   return (
@@ -38,6 +38,8 @@ const Home: React.FC = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          maxHeight:'30rem',
+
         }}
       >
         <div
@@ -50,7 +52,7 @@ const Home: React.FC = () => {
             height: '20rem',
             borderRadius: '50%',
             transition: 'all 1s ease-out',
-            filter: imageLoaded ? 'brightness(1)' : 'brightness(0.1)', 
+            filter: imageLoaded ? 'brightness(1)' : 'brightness(0.1)',
           }}
           aria-label="Profile Image"
         />
