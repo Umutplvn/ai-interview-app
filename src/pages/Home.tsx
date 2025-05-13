@@ -10,8 +10,8 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  const handleNavigate = () => {
-    navigate('/register');
+  const handleNavigate = (link:string) => {
+    navigate(`/${link}`);
   };
 
   useEffect(() => {
@@ -77,18 +77,24 @@ const Home: React.FC = () => {
         />
       </div>
 
-      <div style={{ position: 'relative', bottom: '5rem' }}>
+      <div style={{ position: 'absolute', bottom: '5rem', display:"flex", gap:"1rem" }}>
         <button
           className="btn"
-          style={{
-            backgroundColor: 'black',
-            borderRadius: '1rem',
-            cursor: 'pointer',
-          }}
-          onClick={handleNavigate}
-          aria-label="Go to Login Page"
+          onClick={()=>handleNavigate('register')}
+          aria-label="Go to Register Page"
+          style={{backgroundColor:'#090909', color:"white", width:"6.7rem", border:"0.5px solid black"}}
         >
-          <ShinyText text="Join Us" disabled={false} speed={3} className="custom-class" />
+          <ShinyText text="Sign Up" disabled={false} speed={3} className="custom-class" />
+        </button>
+        
+        <button
+          className="btn"
+          onClick={()=>handleNavigate('login')}
+          aria-label="Go to Login Page"
+          style={{backgroundColor:'#090909', color:"white", width:"6.7rem", border:"0.5px solid black"}}
+
+        >
+          <ShinyText text="Sign In" disabled={false} speed={3} className="custom-class" />
         </button>
       </div>
     </div>
