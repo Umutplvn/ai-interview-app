@@ -1,0 +1,28 @@
+.revealed {
+    color: white;
+    font-size: 1.1rem;
+    transition: font-size 0.3s ease-in-out;
+  }
+  
+  .revealed:hover {
+    font-size: 3rem;
+  }
+  
+  .encrypted {
+    color: gray;
+  }
+  
+  .all-letters {
+    display: inline-block;
+    white-space: pre-wrap;
+    font-size: 1rem;
+    color: white;
+    transition: font-size 0.3s ease-in-out;
+    text-align: center;
+
+  }
+  
+  .all-letters:hover {
+    font-size: 1rem;
+  }
+  

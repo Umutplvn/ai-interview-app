@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import image from '../assets/10041622.png';
 import BlurText from "../components/BlurText";
 import ShinyText from '../components/ShinyText';
+import DecryptedText from '../components/DecryptedText';
+
 import '../styles/homeStyle.css';
 
 const Home: React.FC = () => {
@@ -50,8 +52,22 @@ const Home: React.FC = () => {
           className="text-2xl mb-8"
         />
       </div>
-      
-      <div style={{ height: "50%" }}>
+
+      <div style={{marginBottom:"2rem", height:"25rem", padding:"2rem 1rem"}}>
+      <DecryptedText
+        text="Upload your resume here to begin the online interview process. This platform provides an efficient way for you to present your qualifications and expertise, enabling you to engage directly with potential employers in a professional setting."
+        speed={80}
+        maxIterations={20}
+        characters="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+"
+        className="revealed"
+        parentClassName="all-letters"
+        encryptedClassName="encrypted"
+        
+      />
+
+      </div>
+
+      <div style={{ position:"relative", bottom:"5rem"}}>
         <button
           className="btn"
           style={{

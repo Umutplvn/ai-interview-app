@@ -3,7 +3,7 @@ import '../styles/loginStyle.css'
 
 const Login = () => {
     return (
-        <div>
+        <div style={{width:"100%"}}>
             <form className="form">
                 <div className="flex-column">
                     <label>Email</label>
