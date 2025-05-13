@@ -11,7 +11,7 @@ const Home: React.FC = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const handleNavigate = () => {
-    navigate('/login');
+    navigate('/register');
   };
 
   useEffect(() => {
