@@ -5,6 +5,8 @@ import BlurText from "../components/BlurText";
 import ShinyText from '../components/ShinyText';
 import DecryptedText from '../components/DecryptedText';
 import '../styles/homeStyle.css';
+import logo from '../assets/brain.webp'
+
 
 const Home: React.FC = () => {
   const navigate = useNavigate();

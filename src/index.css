@@ -2,6 +2,7 @@
     margin:0;
     padding: 0;
     box-sizing: border-box;
+    
 }
 
 .wrapper {
@@ -13,14 +14,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
   }
   
   .glow-effect {
     position: absolute;
     bottom: 0px;
-    right: -200px;
+    right: 0px;
+    /* right: -200px; */
     width: 50rem;
-    height: 13rem;
+    overflow: hidden;
+    height: 15rem;
     background: radial-gradient(circle, #00ffc3, transparent 70%);
     filter: blur(190px);
     z-index: 1;
