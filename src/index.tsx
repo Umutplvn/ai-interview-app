@@ -10,9 +10,11 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
+    <div style={{backgroundColor:"#01051b"}}>
     <div className="wrapper">
       <div className="glow-effect" />
       <App />
+    </div>
     </div>
   </React.StrictMode>
 );
