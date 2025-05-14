@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import useAuthCall from '../hooks/useAuthCall'
 import '../styles/loginStyle.css'
@@ -34,6 +35,7 @@ const Login = () => {
             navigate('/main')
         } catch (err:any) {
             setError(err.message)
+
         }
     }
 

@@ -8,6 +8,7 @@ import {
 import { auth, googleProvider } from "../firebase/firebaseConfig"
 import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
+import { toast } from "react-hot-toast";
 
 import {
   fetchFail,
@@ -21,16 +22,34 @@ const useAuthCall = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  const getFirebaseErrorMessage = (code: string): string => {
+    switch (code) {
+      case "auth/user-not-found":
+        return "No user found with this email.";
+      case "auth/wrong-password":
+        return "Incorrect password.";
+      case "auth/email-already-in-use":
+        return "This email is already registered.";
+      case "auth/weak-password":
+        return "Password should be at least 6 characters.";
+      case "auth/invalid-email":
+        return "Invalid email address.";
+      default:
+        return "Something went wrong. Please try again.";
+    }
+  };
+  
+
   const login = async (email: string, password: string): Promise<void> => {
     dispatch(fetchStart())
     try {
       const data: UserCredential = await signInWithEmailAndPassword(auth, email, password)
       const username: string = data.user.email ?? "Unknown User"
       const accessToken: string = await data.user.getIdToken()
-
       dispatch(loginSuccess({ username, accessToken }))
+      toast.success("Login successful!");
     } catch (error: any) {
-      console.error("LOGIN ERROR", error.message)
+      toast.error(getFirebaseErrorMessage(error.code));
       dispatch(fetchFail())
     }
   }
@@ -40,9 +59,9 @@ const useAuthCall = () => {
     try {
       await signOut(auth)
       dispatch(logoutSuccess())
-      console.log("User signed out successfully.")
+      toast.success("Signed out successfully.")
     } catch (error: any) {
-      console.error("Logout error:", error.message)
+      toast.error(getFirebaseErrorMessage(error.code));
       dispatch(fetchFail())
     }
   }
@@ -53,10 +72,10 @@ const useAuthCall = () => {
       const data: UserCredential = await createUserWithEmailAndPassword(auth, email, password)
       const username: string = data.user.email ?? "Unknown User"
       const accessToken: string = await data.user.getIdToken()
-
       dispatch(registerSuccess({ username, accessToken }))
+      toast.success("Registration completed!");
     } catch (error: any) {
-      console.error("REGISTER ERROR", error.message)
+      toast.error(getFirebaseErrorMessage(error.code));
       dispatch(fetchFail())
     }
   }
@@ -69,9 +88,9 @@ const useAuthCall = () => {
       const accessToken: string = await result.user.getIdToken()
 
       dispatch(loginSuccess({ username, accessToken }))
-      console.log("Google login successful:", result.user)
+      toast.success("Login successful!");
     } catch (error: any) {
-      console.error("Google login error:", error.message)
+      toast.error(getFirebaseErrorMessage(error.code));
       dispatch(fetchFail())
     }
   }

@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { toast } from 'react-hot-toast';
 
 const apiKey = process.env.REACT_APP_GEMINI_API!;
 
 const Interview = () => {
   useEffect(() => {
     if (!apiKey) {
-      console.error("API anahtarı tanımlı değil");
+      toast.error("API is not valid!");
       return;
     }
 
@@ -20,7 +21,7 @@ const Interview = () => {
         const text = await response.text();
         console.log(text);
       } catch (error) {
-        console.error("Gemini hatası:", error);
+        console.error("Gemini failed!:", error);
       }
     }
     main();

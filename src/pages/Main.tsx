@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import "../styles/Main.css"
 import iconUpload from "../assets/upload.svg"
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
@@ -56,9 +57,8 @@ const navigate=useNavigate()
       const arrayBuffer = await file.arrayBuffer();
       const result = await mammoth.extractRawText({ arrayBuffer });
       setData({...data, resume:result?.value})
-
     } else {
-      console.error('Unsupported file type');
+      toast.error('Unsupported file type');
     }
   };
 
