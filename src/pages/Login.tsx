@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/loginStyle.css'
-import { signInWithEmailAndPassword } from "firebase/auth"
-import { auth } from "../firebase/firebaseConfig"
 import useAuthCall from '../hooks/useAuthCall'
 
 const Login = () => {
     
-    const {login}=useAuthCall()
+    const {login, googleSignIn}=useAuthCall()
     const navigate = useNavigate()
     
     const [show, setShow] = useState(false)
@@ -28,8 +26,16 @@ const Login = () => {
         }
 
     }
-    console.log(signInCre);
 
+    const handleGoogleSignIn=async (e:React.FormEvent) => {
+        e.preventDefault()
+        try {
+            await googleSignIn()
+            navigate('/main')
+        } catch (err:any) {
+            setError(err.message)
+        }
+    }
 
       
     return (
@@ -99,7 +105,7 @@ const Login = () => {
                 <p className="p line">Or With</p>
 
                 <div className="flex-row">
-                    <button className="btn google">
+                    <button className="btn google" onClick={handleGoogleSignIn}>
                         <svg
                             version="1.1"
                             width="20"
