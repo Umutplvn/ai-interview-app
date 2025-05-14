@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, ReactNode } from 'react'
-import { motion } from 'framer-motion'
+import {AnimatePresence, motion} from 'framer-motion'
 import '../styles/Decrypted.css'
+
 const styles = {
     wrapper: {
         display: 'inline-block',
