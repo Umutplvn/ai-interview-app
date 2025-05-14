@@ -128,7 +128,7 @@ const Main = () => {
       </div>
 
 <button style={{marginTop:"2rem"}}>
-  <span style={{backgroundColor:"white"}}>Continue</span>
+  <span style={{backgroundColor:"transparent"}}>Continue</span>
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"

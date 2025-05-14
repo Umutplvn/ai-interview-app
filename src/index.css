@@ -2,8 +2,6 @@
     margin:0;
     padding: 0;
     box-sizing: border-box;
-    background-color: #01051b;
-
 }
 
 .wrapper {
@@ -16,6 +14,8 @@
     align-items: center;
     max-width: 1200px;
     margin: auto;
+    background-color: #01051b;
+
 
   }
   
