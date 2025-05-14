@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Header from "../components/Header";
 import Home from "../pages/Home";
+import Interview from "../pages/Interview";
 import Login from "../pages/Login";
 import Main from "../pages/Main";
 import SignUp from "../pages/SignUp";
@@ -16,6 +17,7 @@ function App() {
         <Route path="/register" element={<SignUp />} /> 
         <Route path="/main" element={<PrivateRouter />}>
         <Route index element={<Main />} /> 
+        <Route path="interview" element={<Interview/>} /> 
 
         </Route>
       </Routes>

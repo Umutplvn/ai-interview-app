@@ -5,6 +5,7 @@ import * as mammoth from 'mammoth';
 import { AnimatePresence, motion } from 'framer-motion';
 import "../styles/Main.css"
 import iconUpload from "../assets/upload.svg"
+import { useNavigate } from 'react-router-dom';
 
 GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
@@ -20,6 +21,14 @@ const tabs: Ingredient[] = [
 
 const Main = () => {
   const [selectedTab, setSelectedTab] = useState<Ingredient>(tabs[0]);
+  const [data, setData] = useState({description:"", resume:""})
+const navigate=useNavigate()
+
+  const handleContinue=()=>{
+    localStorage.setItem("InterviewData", JSON.stringify(data))
+    navigate('/interview')
+  }
+
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -39,13 +48,15 @@ const Main = () => {
           const content = await page.getTextContent();
           text += content.items.map((item: any) => item.str).join(' ') + '\n';
         }
-        console.log('PDF Text:', text);
+        setData(prev => ({ ...prev, resume: text }));
+        
       };
       fileReader.readAsArrayBuffer(file);
     } else if (extension === 'docx' || extension === 'doc') {
       const arrayBuffer = await file.arrayBuffer();
       const result = await mammoth.extractRawText({ arrayBuffer });
-      console.log('DOCX Text:', result.value);
+      setData({...data, resume:result?.value})
+
     } else {
       console.error('Unsupported file type');
     }
@@ -87,6 +98,7 @@ const Main = () => {
             ))}
           </ul>
         </nav>
+        
         <main className="icon-container">
           <AnimatePresence mode="wait">
             <motion.div
@@ -102,14 +114,17 @@ const Main = () => {
                   <div style={{height:"18rem", borderRadius:"1rem", overflow:"scroll", width:"100%"}} > 
 
                     <textarea
+                    required
                       className="textarea"
                       placeholder="Add Job Description"
+                      onChange={(e)=>setData({...data, description:e.target.value})}
                     />
                   </div>
                 ) : selectedTab.label === "Upload Document" ? (
                   <label className="file-label">
                     <img src={`${iconUpload}`} alt="Upload" className="upload-icon" />
                     <input
+                      required
                       type="file"
                       accept=".pdf,.doc,.docx"
                       onChange={handleFileUpload}
@@ -129,7 +144,10 @@ const Main = () => {
 
       </div>
 
-      <button className='btn-main' style={{ marginTop: "2rem" }}>
+      <button className='btn-main'   style={{ marginTop: "2rem", opacity: (data.description && data.resume) ? 1 : 0.5 }}
+  disabled={!(data.description && data.resume)}
+  onClick={handleContinue}
+  >
         <span style={{ backgroundColor: "transparent" }}>Continue</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
