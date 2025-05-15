@@ -22,7 +22,7 @@ const tabs: Ingredient[] = [
 
 const Main: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<Ingredient>(tabs[0]);
-  const [data, setData] = useState({ description: "", resume: "" });
+  const [data, setData] = useState({ description: "", resume: "", fileName: "" });
   const navigate = useNavigate();
 
   const handleContinue = () => {
@@ -36,7 +36,7 @@ const Main: React.FC = () => {
     if (!file) return;
 
     const extension = file.name.split('.').pop()?.toLowerCase();
-
+    setData(prev => ({ ...prev, fileName: file.name }));
     if (extension === 'pdf') {
       const fileReader = new FileReader();
       fileReader.onload = async () => {
@@ -58,11 +58,12 @@ const Main: React.FC = () => {
       setData(prev => ({ ...prev, resume: result.value }));
     } else {
       toast.error('Unsupported file type');
+      setData(prev => ({ ...prev, fileName: "" }));
     }
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", flexDirection: "column", width:'100vw', height:"100vh", overflow:'scroll' }}>
+    <div style={{ display: "flex", alignItems: "center", flexDirection: "column", width: '100vw', height: "100vh", overflow: 'scroll' }}>
       <div className="image-container">
         <img src={interviewA} className="image" alt="Interview Assistant" />
       </div>
@@ -104,21 +105,29 @@ const Main: React.FC = () => {
                   <textarea
                     required
                     className="textarea"
+                    value={data.description}
                     placeholder="Add Job Description"
                     onChange={(e) => setData({ ...data, description: e.target.value })}
                   />
                 </div>
               ) : (
-                <label className="file-label">
-                  <img src={iconUpload} style={{width:"8rem", cursor:"pointer"}} alt="Upload" className="upload-icon" />
-                  <input
-                    required
-                    type="file"
-                    accept=".pdf,.doc,.docx"
-                    onChange={handleFileUpload}
-                    className="file-input"
-                  />
-                </label>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                  <label className="file-label">
+                    <img src={iconUpload} style={{ width: "8rem", cursor: "pointer" }} alt="Upload" className="upload-icon" />
+                    <input
+                      required
+                      type="file"
+                      accept=".pdf,.doc,.docx"
+                      onChange={handleFileUpload}
+                      className="file-input"
+                    />
+                  </label>
+                  {data.fileName && (
+                    <p style={{ marginTop: "0.5rem", fontSize: "0.9rem", color: "#333", textAlign: "center" }}>
+                      {data.fileName}
+                    </p>
+                  )}
+                </div>
               )}
             </motion.div>
           </AnimatePresence>
