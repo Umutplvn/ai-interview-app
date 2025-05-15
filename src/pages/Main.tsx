@@ -1,169 +1,160 @@
-import React, { useState } from 'react';
-import interviewA from '../assets/ai.jpg';
-import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
-import * as mammoth from 'mammoth';
-import { AnimatePresence, motion } from 'framer-motion';
-import "../styles/Main.css"
-import iconUpload from "../assets/upload.svg"
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-
-GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
-
-interface Ingredient {
-  icon: string;
-  label: string;
-}
-
-const tabs: Ingredient[] = [
-  { icon: "📝", label: "TextBox" },
-  { icon: "📄", label: "Upload Document" },
-];
+import React, { useState, useEffect, useRef } from 'react';
 
 const Main = () => {
-  const [selectedTab, setSelectedTab] = useState<Ingredient>(tabs[0]);
-  const [data, setData] = useState({description:"", resume:""})
-const navigate=useNavigate()
+  const [callActive, setCallActive] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState("");
+  const [answers, setAnswers] = useState<string[]>([]);
+  const [userAnswer, setUserAnswer] = useState("");
+  const [questionCount, setQuestionCount] = useState(0);
+  const totalQuestions = 5;
+  const [resume, setResume] = useState<string | null>(null);
+  const [jobDescription, setJobDescription] = useState<string | null>(null);
 
-  const handleContinue=()=>{
-    localStorage.setItem("InterviewData", JSON.stringify(data))
-    navigate('/interview')
-  }
+  useEffect(() => {
+    const storedResume = localStorage.getItem('resume');
+    const storedJobDescription = localStorage.getItem('jobDescription');
+    setResume(storedResume);
+    setJobDescription(storedJobDescription);
+  }, []);
 
+  const speak = (text: string) => {
+    if (!window.speechSynthesis) return;
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    window.speechSynthesis.speak(utterance);
+    return utterance;
+  };
 
-    const extension = file.name.split('.').pop()?.toLowerCase();
+  const startInterview = async () => {
+    if (!resume || !jobDescription) {
+      speak("Please ensure the resume and job description are stored in local storage.");
+      return;
+    }
 
-    if (extension === 'pdf') {
-      const fileReader = new FileReader();
-      fileReader.onload = async () => {
-        const typedArray = new Uint8Array(fileReader.result as ArrayBuffer);
-        const pdf = await getDocument({ data: typedArray }).promise;
-
-        let text = '';
-        for (let i = 1; i <= pdf.numPages; i++) {
-          const page = await pdf.getPage(i);
-          const content = await page.getTextContent();
-          text += content.items.map((item: any) => item.str).join(' ') + '\n';
+    setAnswers([]);
+    setCurrentQuestion("");
+    setQuestionCount(0);
+    setCallActive(true);
+    speak("Please ensure the resume and job description are stored in local storage.").onend?.(() => {
+      // --- Conceptual vapi.ai Integration ---
+      // In a real application, you would make an API call here.
+      // For this example, we'll simulate getting the first question.
+      getFirstQuestionFromAI(resume, jobDescription).then(firstQuestion => {
+        if (firstQuestion) {
+          setCurrentQuestion(firstQuestion);
+          speak(firstQuestion);
+        } else {
+          speak("Failed to get the first question.");
+          setCallActive(false);
         }
-        setData(prev => ({ ...prev, resume: text }));
-        
-      };
-      fileReader.readAsArrayBuffer(file);
-    } else if (extension === 'docx' || extension === 'doc') {
-      const arrayBuffer = await file.arrayBuffer();
-      const result = await mammoth.extractRawText({ arrayBuffer });
-      setData({...data, resume:result?.value})
+      });
+    });
+  };
+  // --- Conceptual Function to Get the First Question from vapi.ai ---
+  const getFirstQuestionFromAI = async (resume: string, jobDescription: string): Promise<string | null> => {
+    // In a real application, you would use fetch to call the vapi.ai API.
+    // Example (replace with actual vapi.ai endpoint and API key):
+    // const response = await fetch('https://api.vapi.ai/generate_first_question', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': 'YOUR_VAPI_AI_API_KEY',
+    //   },
+    //   body: JSON.stringify({ resume, job_description: jobDescription }),
+    // });
+    // const data = await response.json();
+    // return data.question;
+
+    // Simulate a response for this example
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
+    return "Tell me about your experience related to this job description.";
+  };
+
+  // --- Conceptual Function to Get Subsequent Questions from vapi.ai ---
+  const getNextQuestionFromAI = async (currentQuestion: string, userAnswer: string, resume: string, jobDescription: string): Promise<string | null> => {
+    // In a real application, you would use fetch to call the vapi.ai API.
+    // Example (replace with actual vapi.ai endpoint and API key):
+    // const response = await fetch('https://api.vapi.ai/generate_next_question', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': 'YOUR_VAPI_AI_API_KEY',
+    //   },
+    //   body: JSON.stringify({ current_question: currentQuestion, user_answer: userAnswer, resume, job_description: jobDescription }),
+    // });
+    // const data = await response.json();
+    // return data.question;
+
+    // Simulate a response for this example
+    await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API delay
+    const simulatedQuestions = [
+      "Why are you interested in this company?",
+      "Describe a time you faced a challenge and how you overcame it.",
+      "What are your salary expectations?",
+      "Do you have any questions for me?",
+    ];
+    return simulatedQuestions[questionCount - 1] || null;
+  };
+
+  const handleAnswerSubmit = async () => {
+    if (!userAnswer.trim()) return;
+
+    setAnswers(prev => [...prev, userAnswer.trim()]);
+    setUserAnswer("");
+    setQuestionCount(prevCount => prevCount + 1);
+
+    if (questionCount < totalQuestions) {
+      speak("Thank you for your answer. Let me think...");
+      const nextQuestion = await getNextQuestionFromAI(currentQuestion, userAnswer, resume!, jobDescription!);
+      if (nextQuestion) {
+        setCurrentQuestion(nextQuestion);
+        speak(nextQuestion);
+      } else {
+        speak("Something went wrong while generating the next question.");
+        setCallActive(false);
+      }
     } else {
-      toast.error('Unsupported file type');
+      speak("Thank you for your answers. The voice interview is now complete.");
+      setCallActive(false);
     }
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", flexDirection: "column", paddingBottom:"5rem" }}>
-      <div className="image-container">
-        <img
-          src={interviewA}
-          className="image"
-        />
-      </div>
-      <div className="container">
-        <nav className="nav">
-          <ul className="tabs-container">
-            {tabs.map((item: Ingredient) => (
-              <motion.li
-                key={item.label}
-                initial={false}
-                animate={{
-                  backgroundColor: item === selectedTab ? "#eee" : "#eee0",
-                }}
-                className="tab"
-                onClick={() => setSelectedTab(item)}
-              >
-                <span
-                  className={`tab-text ${item === selectedTab ? 'selected' : ''}`}
-                >
-                  {`${item.icon} ${item.label}`}
-                </span>
-                {item === selectedTab ? (
-                  <motion.div
-                    className="underline"
-                    layoutId="underline"
-                  />
-                ) : null}
-              </motion.li>
-            ))}
-          </ul>
-        </nav>
-        
-        <main className="icon-container">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={selectedTab ? selectedTab.label : "empty"}
-              initial={{ y: 10, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -10, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="icon"
-            >
-              {selectedTab ? (
-                selectedTab.label === "TextBox" ? (
-                  <div style={{height:"18rem", borderRadius:"1rem", overflow:"scroll", width:"100%"}} > 
+    <div style={{ padding: 20 }}>
+      {!callActive ? (
+        <button onClick={startInterview} disabled={!resume || !jobDescription}>
+          Start Voice Interview
+        </button>
+      ) : (
+        <button onClick={() => setCallActive(false)}>End Call</button>
+      )}
 
-                    <textarea
-                    required
-                      className="textarea"
-                      placeholder="Add Job Description"
-                      onChange={(e)=>setData({...data, description:e.target.value})}
-                    />
-                  </div>
-                ) : selectedTab.label === "Upload Document" ? (
-                  <label className="file-label">
-                    <img src={`${iconUpload}`} alt="Upload" className="upload-icon" />
-                    <input
-                      required
-                      type="file"
-                      accept=".pdf,.doc,.docx"
-                      onChange={handleFileUpload}
-                      className="file-input"
-                    />
-                  </label>
-                ) : (
-                  selectedTab.icon
-                )
-              ) : (
-                "😋"
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </main>
+      {callActive && (
+        <div style={{ marginTop: 20 }}>
+          {currentQuestion && <p><strong>AI:</strong> {currentQuestion}</p>}
 
+          <textarea
+            rows={4}
+            value={userAnswer}
+            onChange={(e) => setUserAnswer(e.target.value)}
+            placeholder="Type your answer here..."
+          />
 
-      </div>
+          <button onClick={handleAnswerSubmit} disabled={!userAnswer.trim()}>
+            Submit Answer
+          </button>
 
-      <button className='btn-main'   style={{ marginTop: "2rem", opacity: (data.description && data.resume) ? 1 : 0.5 }}
-  disabled={!(data.description && data.resume)}
-  onClick={handleContinue}
-  >
-        <span style={{ backgroundColor: "transparent" }}>Continue</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 74 74"
-          height="34"
-          width="34"
-        >
-          <circle stroke-width="3" stroke="black" r="35.5" cy="37" cx="37"></circle>
-          <path
-            fill="black"
-            d="M25 35.5C24.1716 35.5 23.5 36.1716 23.5 37C23.5 37.8284 24.1716 38.5 25 38.5V35.5ZM49.0607 38.0607C49.6464 37.4749 49.6464 36.5251 49.0607 35.9393L39.5147 26.3934C38.9289 25.8076 37.9792 25.8076 37.3934 26.3934C36.8076 26.9792 36.8076 27.9289 37.3934 28.5147L45.8787 37L37.3934 45.4853C36.8076 46.0711 36.8076 47.0208 37.3934 47.6066C37.9792 48.1924 38.9289 48.1924 39.5147 47.6066L49.0607 38.0607ZM25 38.5L48 38.5V35.5L25 35.5V38.5Z"
-          ></path>
-        </svg>
-      </button>
-
+          <div style={{ marginTop: 20 }}>
+            <h3>Your Answers:</h3>
+            <ul>
+              {answers.map((ans, i) => (
+                <li key={i}><strong>Q{i + 1}:</strong> {ans}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

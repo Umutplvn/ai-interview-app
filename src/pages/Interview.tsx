@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { toast } from 'react-hot-toast';
+import { toast } from "react-hot-toast";
 
 const apiKey = process.env.REACT_APP_GEMINI_API!;
 
-interface InterviewData {
-  resume: string;
-  description: string;
-}
-
 const Interview = () => {
-  const [questions, setQuestions] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true); // <-- Loading state
+  const recognitionRef = useRef<any | null>(null);
+  const synthRef = useRef(window.speechSynthesis);
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   useEffect(() => {
     if (!apiKey) {
@@ -19,67 +16,99 @@ const Interview = () => {
       return;
     }
 
-    const rawData = localStorage.getItem('InterviewData');
+    // Başlangıçta AI sesli "Hello" desin:
+    speakText("Hello, welcome to your interview. Please answer the questions after the beep.");
+  }, []);
 
-    if (!rawData) {
-      toast.error("No interview data found in localStorage.");
+  // Text-to-Speech fonksiyonu
+  const speakText = (text: string) => {
+    if (!window.speechSynthesis) {
+      toast.error("Speech Synthesis not supported.");
+      return;
+    }
+    setIsSpeaking(true);
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+
+    utterance.onend = () => {
+      setIsSpeaking(false);
+      // Konuşma bittikten sonra mikrofonu açabiliriz:
+      startListening();
+    };
+
+    synthRef.current.cancel(); // varsa eski konuşmayı iptal et
+    synthRef.current.speak(utterance);
+  };
+
+  // Konuşma tanıma başlatma
+  const startListening = () => {
+    const SpeechRecognitionClass =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognitionClass) {
+      toast.error("Speech Recognition API is not supported.");
       return;
     }
 
-    let interviewData: InterviewData;
-    try {
-      interviewData = JSON.parse(rawData);
-    } catch (error) {
-      toast.error("Interview data could not be parsed.");
-      return;
-    }
+    recognitionRef.current = new SpeechRecognitionClass();
 
+    recognitionRef.current.continuous = false;
+    recognitionRef.current.lang = "en-US";
+
+    recognitionRef.current.onstart = () => setIsListening(true);
+    recognitionRef.current.onend = () => setIsListening(false);
+    recognitionRef.current.onerror = (event: any) => {
+      toast.error(`Speech recognition error: ${event.error}`);
+      setIsListening(false);
+    };
+
+    recognitionRef.current.onresult = async (event: any) => {
+      const transcript = Array.from(event.results)
+        .map((result: any) => result[0].transcript)
+        .join("");
+
+      // Kullanıcı cevabını al
+      console.log("User said:", transcript);
+
+      // AI'dan cevap al ve seslendir
+      await generateAndSpeakAIResponse(transcript);
+    };
+
+    recognitionRef.current.start();
+  };
+
+  // AI modeliyle konuşmayı yönet
+  const generateAndSpeakAIResponse = async (userInput: string) => {
     const ai = new GoogleGenerativeAI(apiKey);
+    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    async function main() {
-      try {
-        const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const prompt = `You are an interview assistant. Respond conversationally and briefly to the candidate's answer:
 
-        const prompt = `Here is a resume: ${interviewData.resume}
-Here is a job description: ${interviewData.description}
-Can you generate 5 interview questions based on this information?
-Please format them like this:
-QZT1: [Your first question]
-QZT2: [Your second question]
-QZT3: ...
+Candidate said: "${userInput}"
+Your response:
 `;
 
+    try {
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const text = await response.text();
 
+      console.log("AI response:", text);
 
-        const result = await model.generateContent(prompt);
-        const response = result.response;
-        const text = await response.text();
-
-        console.log("Gemini Output:", text);
-
-        const extractedQuestions = text
-          .split('\n')
-          .filter(line => line.trim().startsWith("QZT"))
-          .map(line => {
-            const parts = line.split(':');
-            return parts.slice(1).join(':').trim();
-          });
-
-        setQuestions(extractedQuestions);
-      } catch (error) {
-        console.error("Gemini failed:", error);
-        toast.error("Gemini failed to generate content.");
-      } finally {
-        setIsLoading(false); // Set loading to false after API call
-      }
+      // AI cevabını seslendir
+      speakText(text);
+    } catch (error) {
+      toast.error("Failed to get AI response.");
+      console.error(error);
     }
-
-    main();
-  }, []);
+  };
 
   return (
     <div>
-    
+      {/* Kullanıcıya sadece sesli mülakat olduğu için UI minimal veya boş olabilir */}
+      <p style={{ display: "none" }}>Interview is in progress...</p>
+      {/* İstersen mikrofonun açık/kapalı durumunu gösteren küçük bir ikon veya yazı koyabilirsin */}
     </div>
   );
 };
