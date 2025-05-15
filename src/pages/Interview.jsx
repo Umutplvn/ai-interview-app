@@ -23,23 +23,6 @@ const Interview = () => {
       return;
     }
 
-    vapi.on("message", (msg) => {
-      if (msg.role === "assistant") {
-        console.log("Assistant:", msg.content);
-
-        if (msg.content.includes("We will be in touch soon. Have a great day!")) {
-          setTimeout(() => {
-            vapi.stop();
-            setIsFinished(false);
-          }, 200);
-        }
-      }
-    });
-
-    vapi.on("transcript", (t) => {
-      setTranscriptLog((prev) => prev + `\n${t.speaker}: ${t.text}`);
-    });
-
   }, []);
 
   const startInterview = async () => {
@@ -71,7 +54,7 @@ Keep your tone natural, friendly, and conversational — not robotic.
 
 After each answer, say something like "Interesting!", "Got it", or "Thanks for sharing" before moving to the next question.
 
-Finish the interview with this exact sentence:
+Finish the interview like this sentence:
 "Thanks a lot for your time. We will be in touch soon. Have a great day!"
 After that, do not say anything else.`
           }
