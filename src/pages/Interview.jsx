@@ -1,76 +1,99 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Vapi from "@vapi-ai/web";
 
 const Interview = () => {
-  const [isFinished, setIsFinished] = useState(false)
-  const vapi = new Vapi("51760d5a-99ef-4059-bf95-20e4189fe76a");
+  const vapiRef = useRef(null);        
+  const [transcriptLog, setTranscriptLog] = useState("");
+  const [inCall, setInCall] = useState(false);
 
-  useEffect(() => {
-    const interviewData = localStorage.getItem("InterviewData");
-    if (!interviewData) {
-      console.error("InterviewData not found in localStorage.");
-      return;
-    }
-    const { resume, description } = JSON.parse(interviewData);
+  // İlk render’da Vapi örneğini üret
+  React.useEffect(() => {
+
+ 
+
+
+    vapiRef.current = new Vapi("51760d5a-99ef-4059-bf95-20e4189fe76a");
+    return () => vapiRef.current?.stop(); // component unmount’ta görüşmeyi kapat
+  }, []);
+
+  const startInterview = async () => {
+    const stored = localStorage.getItem("InterviewData");
+    if (!stored) return console.error("InterviewData bulunamadı.");
+
+    const { resume, description } = JSON.parse(stored);
     if (!resume || !description) {
-      console.error("Missing resume or job description in InterviewData.");
-      return;
+      return console.error("resume veya description eksik.");
     }
-  
-    vapi.send({
-      type: "add-message",
-      message: {
-        role: "system",
-        content: `You are Chloe, a friendly and professional job interviewer.
-        Here is the candidate’s resume:
-        ${resume}
-        And here is the job description:
-        ${description}
-        Start every conversation with a warm greeting. 
-        Example opening:
-        "Hi there, this is Chloe from the XPertAI interview team. Thanks for joining! Are you ready to begin your interview now?"
-        Here is how you should conduct the interview:
-        - Ask one interview question at a time and 5 or 6 question based on the job description and resume, based on the candidate's resume and the job description.
-        - Make your tone natural, conversational, and friendly — not robotic.
-        - After each response, give a short and human-like acknowledgement like “Got it”, “Interesting!”, or “Thanks for sharing.”
-        - Transition smoothly to the next question.
-        - Wait for the candidate to fully finish speaking before you move on.
-        - Focus on relevant skills, experience, and personality fit.
-        
-        Avoid robotic phrases like “this is a simulated interview” or “I will now ask 5 questions”.
-        - Ask around 6 questions about the job details.
-        
-        Finish the interview with a polite closing like:
-        "Thanks a lot for your time. We will be in touch soon. Have a great day!"
-        `
+
+    const assistantConfig = {
+      transcriber: {
+        provider: "deepgram",
+        model: "nova-2",
+        language: "en-US",
       },
-    });
-  
-  }, []); 
+      model: {
+        provider: "openai",
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content: `You are Chloe, a friendly and professional job interviewer.
 
-  
-const startInterview=async ()=>{
-  vapi.start("94203692-8db1-4266-b900-a5ec1c36705f");
-  setIsFinished(true)
-}
+Here is the candidate’s resume:
+${resume}
 
-const endInterview=()=>{
-  vapi.on("call-end", () => {
-    console.log("Call has ended.");
-  });
-  setIsFinished(false)
-}
-    
+And here is the job description:
+${description}
 
+Start every conversation with a warm greeting, e.g.:
+"Hi there, this is Chloe from the XPertAI interview team. Thanks for joining! Are you ready to begin your interview now?"
+
+Interview rules:
+- Ask one question at a time (≈6 questions total) based on resume & description.
+- Tone: natural, conversational, friendly.
+- After every answer say a short acknowledgement (“Got it”, “Interesting!”, …).
+- Wait until the candidate finishes speaking before the next question.
+- Focus on relevant skills, experience, personality fit.
+- Avoid robotic phrases like “this is a simulated interview”.
+- Finish politely:
+"Thanks a lot for your time. We will be in touch soon. Have a great day!"
+After your final polite closing sentence, do not say anything further. Let the conversation end naturally.
+`,
+          },
+        ],
+      },
+      voice: {
+        provider: "playht",
+        voiceId: "jennifer",
+      },
+      name: "Chloe – Inline Interviewer",
+      recordingEnabled: false,
+    };
+
+    await vapiRef.current.start(assistantConfig);
+    setInCall(true);
+  };
+
+  const endInterview = () => {
+    vapiRef.current.stop();
+    setInCall(false);
+  };
 
   return (
     <div>
-      {isFinished? 
-      <button style={{cursor:"pointer"}} onClick={endInterview}>Hang Up</button>:
-      <button style={{cursor:"pointer"}} onClick={startInterview}>Call</button>
-      }
+      {inCall ? (
+        <button onClick={endInterview} style={btnStyle}>
+          Hang Up
+        </button>
+      ) : (
+        <button onClick={startInterview} style={btnStyle}>
+          Call
+        </button>
+      )}
     </div>
   );
+};
 
-  }
-export default Interview
+const btnStyle = { cursor: "pointer", width: "4rem", height: "2rem" };
+
+export default Interview;
