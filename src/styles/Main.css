@@ -1,78 +1,60 @@
 .image-container {
-  width: 100%;
   display: flex;
   justify-content: center;
+  padding-top: 5rem;
 }
 
 .image {
   width: 90%;
-  max-width: 40rem;  
-  padding-top: 2rem;
+  max-width: 40rem;
 }
 
-/* Container */
 .container {
-  margin-top: 2rem;
   width: 90vw;
-  min-width: 340px;
   max-width: 50rem;
-  height: 22rem;
   border-radius: 10px;
-  box-shadow: 0 1px 1px hsl(0deg 0% 0% / 0.075),
-    0 2px 2px hsl(0deg 0% 0% / 0.075), 0 4px 4px hsl(0deg 0% 0% / 0.075),
-    0 8px 8px hsl(0deg 0% 0% / 0.075), 0 16px 16px hsl(0deg 0% 0% / 0.075),
-    0 2px 2px hsl(0deg 0% 0% / 0.075);
-    
-  }
+  background: white;
+  overflow: hidden;
+  box-shadow: 0 1px 1px hsl(0deg 0% 0% / 0.075), 0 2px 2px hsl(0deg 0% 0% / 0.075), 0 4px 4px hsl(0deg 0% 0% / 0.075), 0 8px 8px hsl(0deg 0% 0% / 0.075), 0 16px 16px hsl(0deg 0% 0% / 0.075), 0 2px 2px hsl(0deg 0% 0% / 0.075);
+}
 
-/* Navigation */
 .nav {
-  background: #dcdcdc;
+  background: #000000;
   padding: 5px;
-  background-color: #adafbe;
-  position: relative;
-  z-index: 30;
-    border-radius:1rem 1rem 0 0;
-
 }
 
 .tabs-container {
   list-style: none;
   display: flex;
   padding: 0;
-  margin: 0;
-  
 }
 
 .tab {
   padding: 10px 20px;
   cursor: pointer;
   font-size: 16px;
-border-radius: 0.8rem;
+  position: relative;
+  border-radius: 0.8rem;
+
 }
 
 .tab-text {
   color: white;
   font-weight: normal;
-      background-color: #adafbe;
 
 }
 
 .tab-text.selected {
   color: black;
   font-weight: bold;
-  background-color: #eceeed;
-
 }
+
 
 .icon-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 18rem;
-  background-color: white;
-  border-radius: 0 0 1rem 1rem;
-
+  height: 20rem;
 }
 
 .icon {
@@ -81,79 +63,21 @@ border-radius: 0.8rem;
   align-items: center;
   justify-content: center;
   width: 100%;
-  background-color: transparent;
-  border-radius: 1rem;
+
 }
 
 .textarea {
-  width: 100%;
-  height: 17rem;
-  padding: 1rem;
-  border-radius: 0.2rem;
-  border: none;
-  top: 0;
-
-  
-}
-
-.file-label {
-  display: inline-block;
-  cursor: pointer;
   background-color: white;
-  margin-bottom: 8rem;
-  
+  width: 100%;
+  height: 98%;
+  border: none;
+  padding: 1rem;
+  border-radius: 0.5rem;
 }
+
+
 
 .file-input {
-  display: none; 
-  
-}
-
-.upload-icon {
-  width: 4rem;
-  height: 4rem;
-  object-fit: contain;
-  margin-top: 5rem;
-}
-
-.btn-main {
-  cursor: pointer;
-  font-weight: 700;
-  transition: all 0.2s;
-  padding: 8px;
-  border-radius: 50px;
-  border: 1px solid transparent;
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
-  height: 2.5rem;
-}
-
-.btn-main:hover {
-  background: #dbdada;
-}
-
-.btn-main > svg {
-  width: 34px;
-  margin-left: 10px;
-  transition: transform 0.3s ease-in-out;
-  background-color: white;
-  border-radius: 50%;
-}
-
-.btn-main:hover svg {
-  transform: translateX(5px);
-  background-color: #dbdada;
-}
-
-.btn-main:active {
-  transform: scale(0.95);
-}
-
-@media (max-width: 600px) {
-  .image {
-    width: 85%;
-    margin-bottom: 1rem;
-    transform: translateY(5rem);
-  }
+  padding: 10px;
+  display: none;
 }
