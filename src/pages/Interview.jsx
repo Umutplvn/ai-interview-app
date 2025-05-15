@@ -71,8 +71,8 @@ const endInterview=()=>{
   return (
     <div>
       {isFinished? 
-      <button onClick={endInterview}>Hang Up</button>:
-      <button onClick={startInterview}>Call</button>
+      <button style={{cursor:"pointer"}} onClick={endInterview}>Hang Up</button>:
+      <button style={{cursor:"pointer"}} onClick={startInterview}>Call</button>
       }
     </div>
   );
