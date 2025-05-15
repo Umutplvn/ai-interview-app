@@ -1,34 +1,58 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Vapi from "@vapi-ai/web";
 
 const Interview = () => {
   const [isFinished, setIsFinished] = useState(false);
   const [transcriptLog, setTranscriptLog] = useState("");
-
-  console.log(transcriptLog);
-
-  // 🔹 vapi'yi global tanımla
-  const vapi = new Vapi("51760d5a-99ef-4059-bf95-20e4189fe76a");
+  const vapiRef = useRef(null);
 
   useEffect(() => {
-    const interviewData = localStorage.getItem("InterviewData");
-    if (!interviewData) {
-      console.error("InterviewData not found in localStorage.");
-      return;
-    }
+    vapiRef.current = new Vapi("51760d5a-99ef-4059-bf95-20e4189fe76a");
 
-    const { resume, description } = JSON.parse(interviewData);
-    if (!resume || !description) {
-      console.error("Missing resume or job description in InterviewData.");
-      return;
-    }
+    const vapi = vapiRef.current;
 
+    const onMessage = (msg) => {
+      if (msg.type === "transcript" && msg.transcriptType === "final") {
+        setTranscriptLog((prev) =>
+          prev ? prev + "\n" + msg.transcript : msg.transcript
+        );
+      }
+    };
+
+    const onCallStart = () => {
+      vapi.say(
+        "Hi there, this is Chloe from the XPertAI interview team. Thanks for joining! Are you ready to begin your interview now?"
+      );
+      setIsFinished(true);
+    };
+
+    // Çağrı bittiğinde
+    const onCallEnd = () => {
+      setIsFinished(false);
+    };
+
+    vapi.on("message", onMessage);
+    vapi.on("call-start", onCallStart);
+    vapi.on("call-end", onCallEnd);
+
+    return () => {
+      vapi.off("message", onMessage);
+      vapi.off("call-start", onCallStart);
+      vapi.off("call-end", onCallEnd);
+    };
   }, []);
 
   const startInterview = async () => {
-    setIsFinished(true);
+    const vapi = vapiRef.current;
 
-    vapi.start({
+    const interviewData = localStorage.getItem("InterviewData");
+    if (!interviewData) {
+      alert("InterviewData not found in localStorage.");
+      return;
+    }
+    const { resume, description } = JSON.parse(interviewData);
+
+    await vapi.start({
       transcriber: {
         provider: "deepgram",
         model: "nova-2",
@@ -42,9 +66,9 @@ const Interview = () => {
             role: "system",
             content: `You are Chloe, a friendly and professional job interviewer.
 Here is the candidate’s resume:
-${localStorage.getItem("InterviewData") && JSON.parse(localStorage.getItem("InterviewData")).resume}
+${resume}
 And here is the job description:
-${localStorage.getItem("InterviewData") && JSON.parse(localStorage.getItem("InterviewData")).description}
+${description}
 
 Start every conversation with a warm greeting. Example:
 "Hi there, this is Chloe from the XPertAI interview team. Thanks for joining! Are you ready to begin your interview now?"
@@ -56,8 +80,8 @@ After each answer, say something like "Interesting!", "Got it", or "Thanks for s
 
 Finish the interview like this sentence:
 "Thanks a lot for your time. We will be in touch soon. Have a great day!"
-After that, do not say anything else.`
-          }
+After that, do not say anything else.`,
+          },
         ],
       },
       voice: {
@@ -68,26 +92,30 @@ After that, do not say anything else.`
     });
   };
 
-  // 🔹 Görüşmeyi manuel bitir
   const endInterview = () => {
-    vapi.stop();
+    vapiRef.current.stop();
     setIsFinished(false);
+
+    localStorage.setItem("InterviewTranscript", transcriptLog);
   };
 
   return (
     <div>
       {isFinished ? (
-        <button style={{ cursor: "pointer", width: "6rem", height: "2rem" }} onClick={endInterview}>
+        <button
+          style={{ cursor: "pointer", width: "6rem", height: "2rem" }}
+          onClick={endInterview}
+        >
           Hang Up
         </button>
       ) : (
-        <button style={{ cursor: "pointer", width: "6rem", height: "2rem" }} onClick={startInterview}>
+        <button
+          style={{ cursor: "pointer", width: "6rem", height: "2rem" }}
+          onClick={startInterview}
+        >
           Call
         </button>
       )}
-
-      {/* İsteğe bağlı: Transcript gösterimi */}
-      {/* <pre>{transcriptLog}</pre> */}
     </div>
   );
 };
