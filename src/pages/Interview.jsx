@@ -121,3 +121,6 @@ After that, do not say anything else.`,
 };
 
 export default Interview;
+
+
+// Transkript gemini ile degerlendirmeye sokulacak ve puan verilecek.
