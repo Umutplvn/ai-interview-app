@@ -15,7 +15,10 @@
   border-radius: 0.8rem;
   background: white;
   overflow: scroll;
-  box-shadow: 0 1px 1px hsla(0, 22%, 42%, 0.075), 0 2px 2px hsl(0deg 0% 0% / 0.075), 0 4px 4px hsl(0deg 0% 0% / 0.075), 0 8px 8px hsl(0deg 0% 0% / 0.075), 0 16px 16px hsl(0deg 0% 0% / 0.075), 0 2px 2px hsl(0deg 0% 0% / 0.075);
+  box-shadow: 0 1px 1px hsla(0, 22%, 42%, 0.075),
+    0 2px 2px hsl(0deg 0% 0% / 0.075), 0 4px 4px hsl(0deg 0% 0% / 0.075),
+    0 8px 8px hsl(0deg 0% 0% / 0.075), 0 16px 16px hsl(0deg 0% 0% / 0.075),
+    0 2px 2px hsl(0deg 0% 0% / 0.075);
 }
 
 .nav {
@@ -31,36 +34,31 @@
 }
 
 .tab {
-  padding: 10px 20px;
+  padding: 0.5rem 1rem;
+  margin: 0.3rem;
   cursor: pointer;
   font-size: 16px;
   position: relative;
   border-radius: 0.8rem;
-
 }
 
 .tab-text {
   color: white;
   font-weight: normal;
   height: 4rem;
-
 }
 
 .tab-text.selected {
   color: black;
   font-weight: bold;
   height: 4rem;
-  
-
 }
-
 
 .icon-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 18rem;
-  
 }
 
 .icon {
@@ -69,7 +67,6 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-
 }
 
 .textarea {
@@ -78,15 +75,12 @@
   height: 98%;
   border: none;
   padding: 1rem;
-  
 }
 
 .file-input {
   padding: 10px;
   display: none;
-  
 }
-
 
 .btn-main {
   display: flex;
@@ -124,4 +118,4 @@
 .btn-main:disabled {
   cursor: not-allowed;
   background-color: #888;
-} 
+}
