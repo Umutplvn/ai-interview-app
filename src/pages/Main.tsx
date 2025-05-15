@@ -28,6 +28,7 @@ const Main: React.FC = () => {
   const handleContinue = () => {
     localStorage.setItem("InterviewData", JSON.stringify(data));
     navigate('/interview');
+    console.log(data);
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,7 +62,7 @@ const Main: React.FC = () => {
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+    <div style={{ display: "flex", alignItems: "center", flexDirection: "column", width:'100vw', height:"100vh", overflow:'scroll' }}>
       <div className="image-container">
         <img src={interviewA} className="image" alt="Interview Assistant" />
       </div>
@@ -145,6 +146,8 @@ const Main: React.FC = () => {
           />
         </svg>
       </button>
+
+
     </div>
   );
 };
