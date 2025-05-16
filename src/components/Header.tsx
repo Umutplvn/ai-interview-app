@@ -19,7 +19,7 @@ const Header = () => {
   return (
     <div className='main'>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+      <div onClick={()=>navigate('/main')} style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor:"pointer" }}>
         <img src={`${logo}`} style={{ width: "44px", borderRadius: "50%" }} alt="logo" />
         <h3 style={{ fontWeight: "600", fontSize: "1.3rem", color: "white" }}>
           XpertAI
