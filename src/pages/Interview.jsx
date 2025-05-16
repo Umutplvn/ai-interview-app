@@ -1,12 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
 import Vapi from "@vapi-ai/web";
 import interviewer from "../assets/interviewer.jpg";
+import profile from "../assets/profile.jpg";
 import "../styles/Interview.css";
+import { useSelector } from "react-redux";
 
 const Interview = () => {
   const [isFinished, setIsFinished] = useState(false);
   const [transcriptLog, setTranscriptLog] = useState("");
   const vapiRef = useRef(null);
+  const { name } = useSelector((state) => state.auth);
 
   useEffect(() => {
     vapiRef.current = new Vapi("51760d5a-99ef-4059-bf95-20e4189fe76a");
@@ -103,7 +106,7 @@ After that, do not say anything else.`,
 
   return (
     <div className="main-wrapper">
-      <div>
+      <div className="box-wrapper">
         <div className="image-box" style={{}}>
           <img
             src={`${interviewer}`}
@@ -118,20 +121,35 @@ After that, do not say anything else.`,
           <h3 className="ai-name">Chloe</h3>
         </div>
 
-        <div>
-          
+        <div className="image-box2" style={{}}>
+          <img
+            src={`${profile}`}
+            style={{
+              width: "8rem",
+              height: "8rem",
+              borderRadius: "50%",
+              border: "1px solid #dddd",
+            }}
+            alt=""
+          />
+          <h3 className="ai-name">{name}</h3>
         </div>
       </div>
 
-
       {isFinished ? (
-        <button className="btn-phone" onClick={endInterview}>
-          Hang Up
-        </button>
+        <section onClick={endInterview} class="call-buton">
+          <a class="cc-calto-action-ripple" >
+            <i class="fa fa-phone"></i>
+            <span class="num">Hang Up</span>
+          </a>
+        </section>
       ) : (
-        <button className="btn-phone" onClick={startInterview}>
-          Call
-        </button>
+        <section onClick={startInterview} class="call-buton">
+          <a class="cc-calto-action-ripple" >
+            <i class="fa fa-phone"></i>
+            <span class="num">Call</span>
+          </a>
+        </section>
       )}
     </div>
   );
