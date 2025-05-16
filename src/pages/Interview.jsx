@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import Vapi from "@vapi-ai/web";
-import interviewer from "../assets/interviewer.jpg";
+import interviewer from "../assets/interviewer.png";
 import profile from "../assets/profile.jpg";
 import "../styles/Interview.css";
 import { useSelector } from "react-redux";
 
 const Interview = () => {
   const [isFinished, setIsFinished] = useState(false);
+  const [status, setStatus] = useState("Call");
+
   const [transcriptLog, setTranscriptLog] = useState("");
   const vapiRef = useRef(null);
   const { name } = useSelector((state) => state.auth);
@@ -25,6 +27,7 @@ const Interview = () => {
     };
 
     const onCallStart = () => {
+      setStatus("Hang Up");
       vapi.say(
         "Hi there, this is Chloe from the XPertAI interview team. Thanks for joining! Are you ready to begin your interview now?"
       );
@@ -34,6 +37,7 @@ const Interview = () => {
     // Çağrı bittiğinde
     const onCallEnd = () => {
       setIsFinished(false);
+      setStatus("Call");
     };
 
     vapi.on("message", onMessage);
@@ -48,6 +52,7 @@ const Interview = () => {
   }, []);
 
   const startInterview = async () => {
+    setStatus("Ringing");
     const vapi = vapiRef.current;
 
     const interviewData = localStorage.getItem("InterviewData");
@@ -114,7 +119,7 @@ After that, do not say anything else.`,
               width: "8rem",
               height: "8rem",
               borderRadius: "50%",
-              border: "1px solid #dddd",
+              border: "2px solid #056c00dd",
             }}
             alt=""
           />
@@ -128,7 +133,7 @@ After that, do not say anything else.`,
               width: "8rem",
               height: "8rem",
               borderRadius: "50%",
-              border: "1px solid #dddd",
+              border: "2px solid #004e86dd",
             }}
             alt=""
           />
@@ -136,21 +141,23 @@ After that, do not say anything else.`,
         </div>
       </div>
 
-      {isFinished ? (
-        <section onClick={endInterview} class="call-buton">
-          <a class="cc-calto-action-ripple" >
-            <i class="fa fa-phone"></i>
-            <span class="num">Hang Up</span>
-          </a>
-        </section>
-      ) : (
-        <section onClick={startInterview} class="call-buton">
-          <a class="cc-calto-action-ripple" >
-            <i class="fa fa-phone"></i>
-            <span class="num">Call</span>
-          </a>
-        </section>
-      )}
+      <section
+        onClick={status === "Hang Up" ? endInterview : startInterview}
+        className={`call-button ${
+          status === "Call"
+            ? "call"
+            : status === "Ringing"
+            ? "calling"
+            : status === "Hang Up"
+            ? "hangup"
+            : ""
+        }`}
+      >
+        <a className="cc-calto-action-ripple">
+          <i className="fa fa-phone"></i>
+          <span className="num">{status}</span>
+        </a>
+      </section>
     </div>
   );
 };

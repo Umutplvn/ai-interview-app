@@ -27,6 +27,9 @@ const Header = () => {
       </div>
 {
   currentUser ?
+  <div style={{display:'flex', gap:"1rem"}}>
+<button className="btn-profile">Profile</button>
+
 <button className="btn-header" onClick={signOut}>
   Sign Off
   <div className="icon">
@@ -44,6 +47,7 @@ const Header = () => {
     </svg>
   </div>
 </button>
+  </div>
       :""
 }
 
