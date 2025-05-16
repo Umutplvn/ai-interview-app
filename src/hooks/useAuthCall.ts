@@ -9,6 +9,7 @@ import { auth, googleProvider } from "../firebase/firebaseConfig"
 import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { toast } from "react-hot-toast";
+import { updateProfile } from "firebase/auth";
 
 import {
   fetchFail,
@@ -19,7 +20,6 @@ import {
 } from "../features/authSlice"
 
 const useAuthCall = () => {
-  const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const getFirebaseErrorMessage = (code: string): string => {
@@ -41,18 +41,21 @@ const useAuthCall = () => {
   
 
   const login = async (email: string, password: string): Promise<void> => {
-    dispatch(fetchStart())
+    dispatch(fetchStart());
     try {
-      const data: UserCredential = await signInWithEmailAndPassword(auth, email, password)
-      const username: string = data.user.email ?? "Unknown User"
-      const accessToken: string = await data.user.getIdToken()
-      dispatch(loginSuccess({ username, accessToken }))
+      const data: UserCredential = await signInWithEmailAndPassword(auth, email, password);
+      const username: string = data.user.email ?? "Unknown User";
+      const name: string = data.user.displayName ?? "Unknown Name";
+      const accessToken: string = await data.user.getIdToken();
+  
+      dispatch(loginSuccess({ username, accessToken, name }));
       toast.success("Login successful!");
     } catch (error: any) {
       toast.error(getFirebaseErrorMessage(error.code));
-      dispatch(fetchFail())
+      dispatch(fetchFail());
     }
-  }
+  };
+  
 
   const logout = async (): Promise<void> => {
     dispatch(fetchStart())
@@ -65,35 +68,42 @@ const useAuthCall = () => {
       dispatch(fetchFail())
     }
   }
-
-  const register = async (email: string, password: string): Promise<void> => {
-    dispatch(fetchStart())
+  const register = async (email: string, password: string, name: string): Promise<void> => {
+    dispatch(fetchStart());
     try {
-      const data: UserCredential = await createUserWithEmailAndPassword(auth, email, password)
-      const username: string = data.user.email ?? "Unknown User"
-      const accessToken: string = await data.user.getIdToken()
-      dispatch(registerSuccess({ username, accessToken }))
+      const data: UserCredential = await createUserWithEmailAndPassword(auth, email, password);
+            if (auth.currentUser) {
+        await updateProfile(auth.currentUser, {
+          displayName: name,
+        });
+      }
+  
+      const username: string = data.user.email ?? "Unknown User";
+      const accessToken: string = await data.user.getIdToken();
+      dispatch(registerSuccess({ username, accessToken, name }))
       toast.success("Registration completed!");
     } catch (error: any) {
       toast.error(getFirebaseErrorMessage(error.code));
-      dispatch(fetchFail())
+      dispatch(fetchFail());
     }
   }
 
   const googleSignIn = async (): Promise<void> => {
-    dispatch(fetchStart())
+    dispatch(fetchStart());
     try {
-      const result: UserCredential = await signInWithPopup(auth, googleProvider)
-      const username: string = result.user.email ?? "Unknown User"
-      const accessToken: string = await result.user.getIdToken()
-
-      dispatch(loginSuccess({ username, accessToken }))
+      const result: UserCredential = await signInWithPopup(auth, googleProvider);
+      const username: string = result.user.email ?? "Unknown User";
+      const name: string = result.user.displayName ?? "Unknown Name";
+      const accessToken: string = await result.user.getIdToken();
+  
+      dispatch(loginSuccess({ username, accessToken, name }));
       toast.success("Login successful!");
     } catch (error: any) {
       toast.error(getFirebaseErrorMessage(error.code));
-      dispatch(fetchFail())
+      dispatch(fetchFail());
     }
-  }
+  };
+  
 
   return { login, logout, register, googleSignIn }
 }

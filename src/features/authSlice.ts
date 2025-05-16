@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 interface AuthState {
   currentUser: string | null
+  name: string | null
   loading: boolean
   error: boolean
   token: string | null
@@ -9,6 +10,7 @@ interface AuthState {
 
 const initialState: AuthState = {
   currentUser: null,
+  name: null,
   loading: false,
   error: false,
   token: null,
@@ -26,30 +28,35 @@ const authSlice = createSlice({
 
     loginSuccess: (
       state,
-      action: PayloadAction<{ username: string; accessToken: string }>
+      action: PayloadAction<{ username: string; accessToken: string,  name: string }>
     ) => {
       state.loading = false;
       state.currentUser = action.payload.username;
       state.token = action.payload.accessToken;
       state.error = false;
+      state.name = action.payload.name;
+
     },
 
     logoutSuccess: (state) => {
       state.loading = false
       state.currentUser = null
       state.token = null
+      state.name=null
     },
 
     registerSuccess: (
       state,
       action: PayloadAction<{
         username: string
+        name: string
         accessToken: string
       }>
     ) => {
       state.loading = false;
       state.currentUser = action.payload.username;
       state.token = action.payload.accessToken;
+      state.name = action.payload.name;
       state.error = false;
     },    
 

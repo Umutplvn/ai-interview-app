@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Vapi from "@vapi-ai/web";
+import interviewer from "../assets/interviewer.jpg";
+import "../styles/Interview.css";
 
 const Interview = () => {
   const [isFinished, setIsFinished] = useState(false);
@@ -100,19 +102,34 @@ After that, do not say anything else.`,
   };
 
   return (
-    <div>
+    <div className="main-wrapper">
+      <div>
+        <div className="image-box" style={{}}>
+          <img
+            src={`${interviewer}`}
+            style={{
+              width: "8rem",
+              height: "8rem",
+              borderRadius: "50%",
+              border: "1px solid #dddd",
+            }}
+            alt=""
+          />
+          <h3 className="ai-name">Chloe</h3>
+        </div>
+
+        <div>
+          
+        </div>
+      </div>
+
+
       {isFinished ? (
-        <button
-          style={{ cursor: "pointer", width: "6rem", height: "2rem" }}
-          onClick={endInterview}
-        >
+        <button className="btn-phone" onClick={endInterview}>
           Hang Up
         </button>
       ) : (
-        <button
-          style={{ cursor: "pointer", width: "6rem", height: "2rem" }}
-          onClick={startInterview}
-        >
+        <button className="btn-phone" onClick={startInterview}>
           Call
         </button>
       )}
@@ -121,6 +138,5 @@ After that, do not say anything else.`,
 };
 
 export default Interview;
-
 
 // Transkript gemini ile degerlendirmeye sokulacak ve puan verilecek.

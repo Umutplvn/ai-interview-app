@@ -133,7 +133,6 @@ const Main: React.FC = () => {
           </AnimatePresence>
         </main>
       </div>
-
       <button
         className="btn-main"
         style={{ marginTop: "2rem", opacity: data.description && data.resume ? 1 : 0.5 }}

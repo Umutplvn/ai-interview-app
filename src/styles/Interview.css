@@ -1,0 +1,35 @@
+.main-wrapper{
+    width:90vw;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    gap:2rem
+}
+
+.image-box{
+    width:20rem;
+    height:20rem;
+     border:2px solid #dddd;
+     background-color:#131313dd;
+     display:flex;
+     justify-content:center;
+     align-items:center;
+     border-radius:0.5rem;
+     display:flex;
+     justify-content: center;
+     align-items: center;
+     flex-direction: column;
+}
+
+.btn-phone{
+    cursor: pointer;
+     width: 6rem;
+     height: 2rem 
+}
+
+.ai-name{
+    color: white;
+    margin-top:1rem;
+    font-weight:500;
+}
