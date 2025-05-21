@@ -4,6 +4,7 @@ import Home from "../pages/Home";
 import Interview from "../pages/Interview";
 import Login from "../pages/Login";
 import Main from "../pages/Main";
+import Profile from "../pages/Profile";
 import SignUp from "../pages/SignUp";
 import PrivateRouter from "./PrivateRouter";
 
@@ -18,6 +19,7 @@ function App() {
         <Route path="/" element={<PrivateRouter />}>
         <Route path="/main" element={<Main />} /> 
         <Route path="interview" element={<Interview/>} />
+        <Route path="profile" element={<Profile/>} />
         </Route>
       </Routes>
     </Router>

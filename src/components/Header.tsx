@@ -28,7 +28,7 @@ const Header = () => {
 {
   currentUser ?
   <div style={{display:'flex', gap:"1rem"}}>
-<button className="btn-profile">Profile</button>
+<button onClick={()=>navigate('/profile')} className="btn-profile">Profile</button>
 
 <button className="btn-header" onClick={signOut}>
   Sign Off
