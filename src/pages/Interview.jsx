@@ -4,6 +4,7 @@ import interviewer from "../assets/interviewer.png";
 import profile from "../assets/profile.jpg";
 import "../styles/Interview.css";
 import { useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
 
 const Interview = () => {
   const [isFinished, setIsFinished] = useState(false);
@@ -34,7 +35,6 @@ const Interview = () => {
       setIsFinished(true);
     };
 
-    // Çağrı bittiğinde
     const onCallEnd = () => {
       setIsFinished(false);
       setStatus("Call");
@@ -104,9 +104,12 @@ After that, do not say anything else.`,
 
   const endInterview = () => {
     vapiRef.current.stop();
-    setIsFinished(false);
-
+    setIsFinished(false)
     localStorage.setItem("InterviewTranscript", transcriptLog);
+    
+    setTimeout(() => {
+        toast.success('Great job! Feedback is in your profile.')
+    }, 1000);
   };
 
   return (
