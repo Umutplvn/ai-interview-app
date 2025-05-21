@@ -1,0 +1,229 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+
+body {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  overflow-x: hidden;
+  display: grid;
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 50em;
+  margin-inline: auto;
+  gap: 3.25rem;
+  position: absolute;
+  z-index: 10;
+  align-items: center;
+  padding: 15em 0;
+}
+
+.section .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    max-width: 45rem;
+    height: 30rem; 
+    min-height: 50%;
+    width: 95%;
+    padding: 1rem;
+    padding-bottom: 2rem; 
+    box-shadow: 0.063em 0.75em 1.563em rgb(0 0 0 / 78%);
+    border-radius: 1rem;
+    overflow: scroll; 
+    text-align: center;
+
+  }
+
+@media screen and (min-width: 33.75rem) {
+  .section .card {
+    min-height: 15rem;
+  }
+}
+
+.section .card-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.8em 0.8em 0em 1.5em;
+}
+
+.section .card-header .close {
+  color: #d9d9d9;
+  width: 1.5rem;
+  cursor: pointer;
+}
+
+.section .card-body {
+  width: 100%;
+  padding: 0.7em 2em 0.5em 2em;
+  text-align: left;
+}
+
+@media screen and (min-width: 33.75rem) {
+  .section .card-body {
+    display: flex;
+    text-align: unset;
+  }
+}
+
+.section .card-body .icon {
+  width: 3rem;
+}
+
+@media screen and (min-width: 33.75rem) {
+  .section .card-body .icon {
+    width: 4rem;
+  }
+}
+
+@media screen and (min-width: 33.75rem) {
+  .section .card-body > div {
+    margin-left: 2em;
+  }
+}
+
+.section .card-body h3 {
+  text-align: left;
+  color: #fff;
+  font-size: 1.2rem;
+  letter-spacing: 0.035em;
+  margin-top: 0.625em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+}
+
+.section .card-body p {
+  text-align: left;
+  color: #cccccc;
+  font-size: 1rem;
+  letter-spacing: 0.031rem;
+}
+
+.section .progress {
+  width: 100%;
+  margin-top: 0.938rem;
+  display: flex;
+  flex-direction: column;
+
+}
+
+@media screen and (min-width: 33.75rem) {
+  .section .progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+
+  }
+}
+
+.section .progress > div {
+  width: 100%;
+  
+}
+
+.section .progress-bar {
+  position: relative;
+  width: 100%;
+  background: #363636;
+  height: 0.35rem;
+  display: block;
+  border-radius: 3.125rem;
+}
+
+.section .progress-bar::after {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  display: block;
+  border-radius: 3.125rem;
+}
+
+.section .progress span:first-of-type {
+  color: #cccccc;
+  text-align: right;
+  font-weight: 600;
+  width: 100%;
+  display: block;
+  margin-bottom: 0.313rem;
+  font-size: 0.9rem;
+}
+
+.section .btn-first,
+.section .btn-second {
+  background: #222127;
+  color: #fff;
+  border-radius: 1em;
+  padding: 0.5rem 1.5rem;
+  display: inline-block;
+  font-size: 0.9rem;
+  transition: 0.1s;
+}
+
+@media screen and (min-width: 33.75rem) {
+  .section .btn-first,
+  .section .btn-second {
+    padding: 0.35rem 2rem;
+
+  }
+}
+
+.section .btn-second {
+  margin-left: 2em;
+}
+
+/* GREEN CARD */
+.section .green {
+    background: radial-gradient(ellipse at right top, #107667 0%, #151419 47%, #151419 100%);
+    opacity: 1;
+}
+
+.section .green:hover {
+  opacity: 1;
+}
+
+.section .green .icon {
+  color: #0fa164;
+}
+
+.section .green .card-body {
+  align-items: flex-end;
+}
+
+.section .green .progress-bar::after {
+  width: 90%;
+  background: #2eea9d;
+}
+
+.section .green .btn-first {
+  margin-left: 0;
+  transition: 0.1s;
+}
+
+.section .green .btn-first:hover {
+  background: #b91515;
+}
+
+.section .green .btn-second:hover {
+  background: #16a22d;
+}
+

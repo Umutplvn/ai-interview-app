@@ -5,20 +5,26 @@ import profile from "../assets/profile.jpg";
 import "../styles/Interview.css";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
+import { GoogleGenAI } from "@google/genai";
+import InterviewModal from "../components/InterviewModal";
+
 
 const Interview = () => {
   const [isFinished, setIsFinished] = useState(false);
   const [status, setStatus] = useState("Call");
-
   const [transcriptLog, setTranscriptLog] = useState("");
   const vapiRef = useRef(null);
   const { name } = useSelector((state) => state.auth);
+  const ai = new GoogleGenAI({
+    apiKey: "AIzaSyBtRyabSRdfcGwmHJe0dGUY8JUC7UTxf48", // Still recommending moving this to .env
+  });
+  
+
+
 
   useEffect(() => {
     vapiRef.current = new Vapi("51760d5a-99ef-4059-bf95-20e4189fe76a");
-
     const vapi = vapiRef.current;
-
     const onMessage = (msg) => {
       if (msg.type === "transcript" && msg.transcriptType === "final") {
         setTranscriptLog((prev) =>
@@ -54,13 +60,14 @@ const Interview = () => {
   const startInterview = async () => {
     setStatus("Ringing");
     const vapi = vapiRef.current;
-
     const interviewData = localStorage.getItem("InterviewData");
     if (!interviewData) {
       alert("InterviewData not found in localStorage.");
       return;
     }
+
     const { resume, description } = JSON.parse(interviewData);
+
 
     await vapi.start({
       transcriber: {
@@ -84,6 +91,7 @@ Start every conversation with a warm greeting. Example:
 "Hi there, this is Chloe from the XPertAI interview team. Thanks for joining! Are you ready to begin your interview now?"
 
 Ask 5-6 questions one at a time based on the resume and job description.
+Start by asking candidate to introce herself/himself.
 Keep your tone natural, friendly, and conversational — not robotic.
 
 After each answer, say something like "Interesting!", "Got it", or "Thanks for sharing" before moving to the next question.
@@ -102,18 +110,53 @@ After that, do not say anything else.`,
     });
   };
 
-  const endInterview = () => {
+  const endInterview =async () => {
     vapiRef.current.stop();
     setIsFinished(false)
     localStorage.setItem("InterviewTranscript", transcriptLog);
-    
-    setTimeout(() => {
-        toast.success('Great job! Feedback is in your profile.')
-    }, 1000);
+
+
+
+
+
+
+
+
+
+
+
+    //! Gemini
+    const interviewData = localStorage.getItem("InterviewData");
+    const { resume, description } = JSON.parse(interviewData);
+    const response = await ai.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: `
+      You are an expert job interviewer and evaluator.
+      Here is the transcript of an interview with a candidate:
+      ${transcriptLog}
+      Here is the job description and resume:
+      Job Description: ${description}
+      Resume: ${resume}
+      Please analyze the candidate’s performance and return a JSON object with the following structure:
+      {
+        "score": number,
+        "strongSides": string[], // A clear paragraph describing strengths
+        "weaknesses": string[]  // A clear paragraph describing weaknesses
+      }
+      Give feedback as clear explanation paragraph.
+      Only output the JSON object, no extra text.
+      `,
+    });
   };
 
+
+
+  
+ 
   return (
     <div className="main-wrapper">
+        <InterviewModal/>
+
       <div className="box-wrapper">
         <div className="image-box" style={{}}>
           <img
