@@ -4,7 +4,6 @@ import interviewer from "../assets/interviewer.png";
 import profile from "../assets/profile.jpg";
 import "../styles/Interview.css";
 import { useSelector } from "react-redux";
-import { toast } from "react-hot-toast";
 import { GoogleGenAI } from "@google/genai";
 import InterviewModal from "../components/InterviewModal";
 
@@ -13,10 +12,12 @@ const Interview = () => {
   const [isFinished, setIsFinished] = useState(false);
   const [status, setStatus] = useState("Call");
   const [transcriptLog, setTranscriptLog] = useState("");
+  const [showModal, setShowModal] = useState(false)
+  const [review, setReview] = useState()
   const vapiRef = useRef(null);
   const { name } = useSelector((state) => state.auth);
   const ai = new GoogleGenAI({
-    apiKey: "AIzaSyBtRyabSRdfcGwmHJe0dGUY8JUC7UTxf48", // Still recommending moving this to .env
+    apiKey: "AIzaSyBtRyabSRdfcGwmHJe0dGUY8JUC7UTxf48"
   });
   
 
@@ -114,40 +115,34 @@ After that, do not say anything else.`,
     vapiRef.current.stop();
     setIsFinished(false)
     localStorage.setItem("InterviewTranscript", transcriptLog);
-
-
-
-
-
-
-
-
-
-
+    setShowModal(true)
 
     //! Gemini
-    const interviewData = localStorage.getItem("InterviewData");
-    const { resume, description } = JSON.parse(interviewData);
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
       contents: `
       You are an expert job interviewer and evaluator.
       Here is the transcript of an interview with a candidate:
       ${transcriptLog}
-      Here is the job description and resume:
-      Job Description: ${description}
-      Resume: ${resume}
+    
       Please analyze the candidate’s performance and return a JSON object with the following structure:
       {
         "score": number,
         "strongSides": string[], // A clear paragraph describing strengths
         "weaknesses": string[]  // A clear paragraph describing weaknesses
       }
-      Give feedback as clear explanation paragraph.
       Only output the JSON object, no extra text.
       `,
     });
-  };
+    const content = response.choices?.[0]?.message?.content || response;
+
+    try {
+      const parsed = JSON.parse(content);
+      setReview(parsed);
+    } catch (error) {
+      console.error("JSON parse error:", error);
+      setReview(content); 
+    }  };
 
 
 
@@ -155,8 +150,8 @@ After that, do not say anything else.`,
  
   return (
     <div className="main-wrapper">
-        <InterviewModal/>
-
+        <InterviewModal showModal={showModal} review={review} onClose={() => setShowModal(false)} 
+/>
       <div className="box-wrapper">
         <div className="image-box" style={{}}>
           <img
