@@ -7,6 +7,9 @@ import "../styles/Main.css";
 import iconUpload from "../assets/upload.svg";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { db } from '../firebase/firebaseConfig'
+import { collection, addDoc, getDocs } from "firebase/firestore";
+
 
 GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
@@ -61,6 +64,8 @@ const Main: React.FC = () => {
       setData(prev => ({ ...prev, fileName: "" }));
     }
   };
+
+
 
   return (
     <div style={{ display: "flex", alignItems: "center", flexDirection: "column", width: '100vw', height: "100vh", overflow: 'scroll' }}>

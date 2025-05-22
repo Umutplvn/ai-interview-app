@@ -17,14 +17,14 @@ const Interview = () => {
   const vapiRef = useRef(null);
   const { name } = useSelector((state) => state.auth);
   const ai = new GoogleGenAI({
-    apiKey: "AIzaSyBtRyabSRdfcGwmHJe0dGUY8JUC7UTxf48"
+    apiKey: process.env.REACT_APP_GOOGLE_API_KEY
   });
   
 
 
 
   useEffect(() => {
-    vapiRef.current = new Vapi("51760d5a-99ef-4059-bf95-20e4189fe76a");
+    vapiRef.current = new Vapi(process.env.REACT_APP_VAPI_KEY);
     const vapi = vapiRef.current;
     const onMessage = (msg) => {
       if (msg.type === "transcript" && msg.transcriptType === "final") {
@@ -89,7 +89,7 @@ And here is the job description:
 ${description}
 
 Start every conversation with a warm greeting. Example:
-"Hi there, this is Chloe from the XPertAI interview team. Thanks for joining! Are you ready to begin your interview now?"
+"Hey, Chloe from XPertAI. Let’s start your interview!"
 
 Ask 5-6 questions one at a time based on the resume and job description.
 Start by asking candidate to introce herself/himself.
@@ -130,6 +130,7 @@ After that, do not say anything else.`,
         "score": number,
         "strongSides": string[], // A clear paragraph describing strengths
         "weaknesses": string[]  // A clear paragraph describing weaknesses
+        "jobTitle": string       // The position/title applied for
       }
       Only output the JSON object, no extra text.
       `,
@@ -205,4 +206,3 @@ After that, do not say anything else.`,
 
 export default Interview;
 
-// Transkript gemini ile degerlendirmeye sokulacak ve puan verilecek.

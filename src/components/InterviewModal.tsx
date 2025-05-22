@@ -1,6 +1,10 @@
 import React from 'react'
+import { collection, addDoc } from "firebase/firestore";
 import '../styles/InterviewModal.css'
 import loading from '../assets/Infinity@1x-1.0s-200px-200px.svg'
+import { db } from '../firebase/firebaseConfig'
+import { serverTimestamp } from "firebase/firestore";
+import { toast } from 'react-hot-toast';
 
 interface Review {
   score: number;
@@ -58,6 +62,21 @@ const InterviewModal: React.FC<InterviewModalProps> = ({ showModal, onClose, rev
     parsedReview = null;
   }
 
+
+  const addData = async () => {
+    if (!parsedReview) return;
+    try {
+      const docRef = await addDoc(collection(db, "interviewData"), { ...parsedReview, createdAt: serverTimestamp() });
+      toast.success("Result added to profile!");
+    } catch (e) {
+      toast.error("Failed to save interview data.");
+    }
+  }
+
+
+  console.log(parsedReview);
+
+
   return (
     <section className='section'>
       <div className="card green">
@@ -94,8 +113,8 @@ const InterviewModal: React.FC<InterviewModalProps> = ({ showModal, onClose, rev
               <div>
                 <h3>Interview Summary</h3>
                 <hr style={{ border: "1px solid #b7b7b7" }} />
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", maxHeight: "20rem", overflowY: "auto", paddingBottom:"3rem" }}>
-                  <h4 style={{ color: "white", marginBottom: "0.25rem", paddingTop:"1rem" }}>Score</h4>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", maxHeight: "20rem", overflowY: "auto", paddingBottom: "3rem" }}>
+                  <h4 style={{ color: "white", marginBottom: "0.25rem", paddingTop: "1rem" }}>Score</h4>
                   <p style={{ color: "white", marginTop: 0 }}>{parsedReview.score ?? "-"}</p>
 
                   <h4 style={{ color: "white", marginBottom: "0.25rem", marginTop: "1rem" }}>Strong Sides</h4>
@@ -115,9 +134,9 @@ const InterviewModal: React.FC<InterviewModalProps> = ({ showModal, onClose, rev
               </div>
             </>
           ) : (
-            <div style={{width:"100%", height:"100%"}}>
+            <div style={{ width: "100%", height: "100%" }}>
 
-                <img src={loading} style={{width:"5rem", marginTop:"4rem"}} alt="" />
+              <img src={loading} style={{ width: "5rem", marginTop: "4rem" }} alt="" />
             </div>
           )}
         </div>
@@ -129,7 +148,11 @@ const InterviewModal: React.FC<InterviewModalProps> = ({ showModal, onClose, rev
             </h4>
             <div>
               <a href="#" className="btn-first" onClick={(e) => { e.preventDefault(); onClose() }}>Cancel</a>
-              <a href="#" className="btn-second">Save</a>
+              <a href="#" className="btn-second" onClick={(e) => {
+                e.preventDefault();
+                addData();
+                onClose();
+              }}>Save</a>
             </div>
           </div>
         )}
