@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 import { toast } from 'react-hot-toast';
-import '../styles/Profile.css'; 
+import '../styles/Profile.css';
+import { deleteDoc, doc } from "firebase/firestore";
 
 interface InterviewData {
+  id: string; 
   score: number;
   strongSides: string[];
   weaknesses: string[];
@@ -26,7 +28,10 @@ const Profile: React.FC = () => {
         const querySnapshot = await getDocs(q);
         const data: InterviewData[] = [];
         querySnapshot.forEach((doc) => {
-          data.push(doc.data() as InterviewData);
+          data.push({
+            id: doc.id,
+            ...(doc.data() as Omit<InterviewData, "id">),
+          });
         });
         setInterviews(data);
       } catch (error) {
@@ -36,9 +41,23 @@ const Profile: React.FC = () => {
         setLoading(false);
       }
     };
-
+  
     fetchInterviews();
   }, []);
+  
+
+  const handleDelete = async (interviewId: string) => {
+    try {
+      await deleteDoc(doc(db, "interviewData", interviewId));
+      toast.success("Interview deleted!");
+      closeModal();
+      setInterviews(prev => prev.filter(interview => interview.id !== interviewId));
+    } catch (error) {
+      toast.error("Failed to delete the interview.");
+      console.error("Deletion error:", error);
+    }
+  };
+  
 
   const openModal = (interview: InterviewData) => {
     setSelectedInterview(interview);
@@ -55,7 +74,13 @@ const Profile: React.FC = () => {
   return (
     <div className="profile-container">
       <h2>Interview Results</h2>
-      {interviews.length === 0 && <p>No interview data found.</p>}
+      {interviews.length === 0 && 
+      <div>
+        <br /> <br /> <br />
+        <p style={{textAlign:"center", fontSize:'1.3rem'}}>No interview data found.</p>
+      </div>
+      
+      }
       {interviews.map((interview, idx) => (
         <div
           onClick={() => openModal(interview)}
@@ -71,10 +96,31 @@ const Profile: React.FC = () => {
         <div className="profile-modalBackdrop">
           <div className="profile-modalContent">
             <h3>{selectedInterview.jobTitle} {selectedInterview.company ? `- ${selectedInterview.company}` : ''}</h3>
-            <p><strong>Score:</strong> {selectedInterview.score}</p>
-            <p><strong>Strengths:</strong> {selectedInterview.strongSides.join(' ')}</p>
-            <p><strong>Weaknesses:</strong> {selectedInterview.weaknesses.join(' ')}</p>
-            <button onClick={closeModal}>Close</button>
+            <p>
+              <strong>Score:</strong><br />
+              {selectedInterview.score !== undefined ? `${selectedInterview.score}/100` : "-"}
+            </p>
+
+            <p>
+              <strong>Strengths:</strong><br />
+              {selectedInterview.strongSides && selectedInterview.strongSides.length > 0
+                ? selectedInterview.strongSides.join(' ')
+                : "-"}
+            </p>
+
+            <p>
+              <strong>Weaknesses:</strong><br />
+              {selectedInterview.weaknesses && selectedInterview.weaknesses.length > 0
+                ? selectedInterview.weaknesses.join(' ')
+                : "-"}
+            </p>
+
+            <div style={{ width: '100%', display: 'flex', justifyContent: "center", gap:'1rem', marginTop:'2rem' }}>
+
+              <button  onClick={closeModal} className="btn-close">Close</button>
+              <button onClick={() => handleDelete(selectedInterview.id)} className="btn-delete">Delete</button>
+
+            </div>
           </div>
         </div>
       )}
