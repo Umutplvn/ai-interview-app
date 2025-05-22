@@ -5,6 +5,7 @@ import loading from '../assets/Infinity@1x-1.0s-200px-200px.svg'
 import { db } from '../firebase/firebaseConfig'
 import { serverTimestamp } from "firebase/firestore";
 import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface Review {
   score: number;
@@ -35,6 +36,8 @@ const isApiResponse = (obj: any): obj is ApiResponse => {
 }
 
 const InterviewModal: React.FC<InterviewModalProps> = ({ showModal, onClose, review }) => {
+  const navigate=useNavigate()
+
   if (!showModal) return null;
 
   let parsedReview: Review | null = null;
@@ -68,6 +71,7 @@ const InterviewModal: React.FC<InterviewModalProps> = ({ showModal, onClose, rev
     try {
       const docRef = await addDoc(collection(db, "interviewData"), { ...parsedReview, createdAt: serverTimestamp() });
       toast.success("Result added to profile!");
+      navigate('/main')
     } catch (e) {
       toast.error("Failed to save interview data.");
     }

@@ -130,7 +130,7 @@ After that, do not say anything else.`,
         "score": number,
         "strongSides": string[], // A clear paragraph describing strengths
         "weaknesses": string[]  // A clear paragraph describing weaknesses
-        "jobTitle": string       // The position/title applied for
+        "position": string  // format: "Job Title - Company"
       }
       Only output the JSON object, no extra text.
       `,
