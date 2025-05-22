@@ -93,9 +93,9 @@ const InterviewModal: React.FC<InterviewModalProps> = ({ showModal, onClose, rev
 
               <div>
                 <h3>Interview Summary</h3>
-
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", maxHeight: "20rem", overflowY: "auto" }}>
-                  <h4 style={{ color: "white", marginBottom: "0.25rem" }}>Score</h4>
+                <hr style={{ border: "1px solid #b7b7b7" }} />
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", maxHeight: "20rem", overflowY: "auto", paddingBottom:"3rem" }}>
+                  <h4 style={{ color: "white", marginBottom: "0.25rem", paddingTop:"1rem" }}>Score</h4>
                   <p style={{ color: "white", marginTop: 0 }}>{parsedReview.score ?? "-"}</p>
 
                   <h4 style={{ color: "white", marginBottom: "0.25rem", marginTop: "1rem" }}>Strong Sides</h4>
