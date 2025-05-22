@@ -1,0 +1,46 @@
+.profile-container {
+    color: white;
+    width: 90%;
+    max-width: 45rem;
+    background-color: rgb(25, 25, 25);
+    padding: 1rem;
+    border-radius: 8px;
+    height: 80%;
+    margin-top: 5rem;
+    font-family:serif;
+  }
+  
+  .profile-interviewItem {
+    border: 1px solid #3d3d3d;
+    margin: 10px 0;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    border-radius: 6px;
+    background-color: rgb(41, 41, 41);
+  }
+  
+  .profile-interviewItem:hover {
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+        background-color: rgb(29, 27, 27);
+  }
+  
+  .profile-modalBackdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .profile-modalContent {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+  }
+  
