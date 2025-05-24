@@ -4,23 +4,21 @@ import {
   createUserWithEmailAndPassword,
   signInWithPopup,
   UserCredential,
-} from "firebase/auth"
-import { auth, googleProvider } from "../firebase/firebaseConfig"
-import { useNavigate } from "react-router-dom"
-import { useDispatch } from "react-redux"
+} from "firebase/auth";
+import { auth, googleProvider } from "../firebase/firebaseConfig";
+import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
 import { updateProfile } from "firebase/auth";
-
 import {
   fetchFail,
   fetchStart,
   loginSuccess,
   logoutSuccess,
   registerSuccess,
-} from "../features/authSlice"
+} from "../features/authSlice";
 
 const useAuthCall = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const getFirebaseErrorMessage = (code: string): string => {
     switch (code) {
@@ -38,7 +36,6 @@ const useAuthCall = () => {
         return "Something went wrong. Please try again.";
     }
   };
-  
 
   const login = async (email: string, password: string): Promise<void> => {
     dispatch(fetchStart());
@@ -47,8 +44,9 @@ const useAuthCall = () => {
       const username: string = data.user.email ?? "Unknown User";
       const name: string = data.user.displayName ?? "Unknown Name";
       const accessToken: string = await data.user.getIdToken();
+      const uid: string = data.user.uid;  // UID ekledik
   
-      dispatch(loginSuccess({ username, accessToken, name }));
+      dispatch(loginSuccess({ username, accessToken, name, uid }));
       toast.success("Login successful!");
     } catch (error: any) {
       toast.error(getFirebaseErrorMessage(error.code));
@@ -58,21 +56,22 @@ const useAuthCall = () => {
   
 
   const logout = async (): Promise<void> => {
-    dispatch(fetchStart())
+    dispatch(fetchStart());
     try {
-      await signOut(auth)
-      dispatch(logoutSuccess())
-      toast.success("Signed out successfully.")
+      await signOut(auth);
+      dispatch(logoutSuccess());
+      toast.success("Signed out successfully.");
     } catch (error: any) {
       toast.error(getFirebaseErrorMessage(error.code));
-      dispatch(fetchFail())
+      dispatch(fetchFail());
     }
-  }
+  };
+
   const register = async (email: string, password: string, name: string): Promise<void> => {
     dispatch(fetchStart());
     try {
       const data: UserCredential = await createUserWithEmailAndPassword(auth, email, password);
-            if (auth.currentUser) {
+      if (auth.currentUser) {
         await updateProfile(auth.currentUser, {
           displayName: name,
         });
@@ -80,13 +79,16 @@ const useAuthCall = () => {
   
       const username: string = data.user.email ?? "Unknown User";
       const accessToken: string = await data.user.getIdToken();
-      dispatch(registerSuccess({ username, accessToken, name }))
+      const uid: string = data.user.uid;  // UID eklendi
+      
+      dispatch(registerSuccess({ username, accessToken, name, uid }));
       toast.success("Registration completed!");
     } catch (error: any) {
       toast.error(getFirebaseErrorMessage(error.code));
       dispatch(fetchFail());
     }
-  }
+  };
+  
 
   const googleSignIn = async (): Promise<void> => {
     dispatch(fetchStart());
@@ -95,17 +97,17 @@ const useAuthCall = () => {
       const username: string = result.user.email ?? "Unknown User";
       const name: string = result.user.displayName ?? "Unknown Name";
       const accessToken: string = await result.user.getIdToken();
-  
-      dispatch(loginSuccess({ username, accessToken, name }));
+      const uid: string = result.user.uid;
+
+      dispatch(loginSuccess({ username, accessToken, name, uid }));
       toast.success("Login successful!");
     } catch (error: any) {
       toast.error(getFirebaseErrorMessage(error.code));
       dispatch(fetchFail());
     }
   };
-  
 
-  return { login, logout, register, googleSignIn }
-}
+  return { login, logout, register, googleSignIn };
+};
 
-export default useAuthCall
+export default useAuthCall;

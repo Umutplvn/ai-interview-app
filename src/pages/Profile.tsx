@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, where } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 import { toast } from 'react-hot-toast';
 import '../styles/Profile.css';
 import { deleteDoc, doc } from "firebase/firestore";
 import Gauge from '../components/Gauge';
+import { getAuth } from 'firebase/auth';
+import { useSelector } from 'react-redux';
 
 interface InterviewData {
   id: string;
@@ -22,11 +24,23 @@ const Profile: React.FC = () => {
   const [selectedInterview, setSelectedInterview] = useState<InterviewData | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const userId = useSelector((state: any) => state.auth.userId);
 
   useEffect(() => {
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
     const fetchInterviews = async () => {
+
+      console.log(userId);
       try {
-        const q = query(collection(db, "interviewData"), orderBy("createdAt", "desc"));
+        const q = query(
+          collection(db, "interviewData"),
+          where("userId", "==", userId),
+          where("createdAt", "!=", null), 
+          orderBy("createdAt", "desc")
+        );
         const querySnapshot = await getDocs(q);
         const data: InterviewData[] = [];
         querySnapshot.forEach((doc) => {
@@ -43,7 +57,6 @@ const Profile: React.FC = () => {
         setLoading(false);
       }
     };
-
     fetchInterviews();
   }, []);
 
@@ -63,7 +76,7 @@ const Profile: React.FC = () => {
 
   const handleAccountDelete = () => {
     setShowDeleteModal(false);
-    // Buraya gerçek silme işlemini ekle
+
     toast.success("Account deleted!"); 
   };
 

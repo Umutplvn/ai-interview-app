@@ -6,6 +6,7 @@ interface AuthState {
   loading: boolean
   error: boolean
   token: string | null
+  userId: string | null;
 }
 
 const initialState: AuthState = {
@@ -14,6 +15,7 @@ const initialState: AuthState = {
   loading: false,
   error: false,
   token: null,
+  userId: null,  
 }
 
 const authSlice = createSlice({
@@ -28,13 +30,14 @@ const authSlice = createSlice({
 
     loginSuccess: (
       state,
-      action: PayloadAction<{ username: string; accessToken: string,  name: string }>
+      action: PayloadAction<{ username: string; accessToken: string,  name: string, uid: string }>
     ) => {
       state.loading = false;
       state.currentUser = action.payload.username;
       state.token = action.payload.accessToken;
       state.error = false;
       state.name = action.payload.name;
+      state.userId = action.payload.uid; 
 
     },
 
@@ -43,6 +46,7 @@ const authSlice = createSlice({
       state.currentUser = null
       state.token = null
       state.name=null
+      state.userId = null;
     },
 
     registerSuccess: (
@@ -51,6 +55,7 @@ const authSlice = createSlice({
         username: string
         name: string
         accessToken: string
+        uid: string
       }>
     ) => {
       state.loading = false;
@@ -58,6 +63,7 @@ const authSlice = createSlice({
       state.token = action.payload.accessToken;
       state.name = action.payload.name;
       state.error = false;
+      state.userId = action.payload.uid;
     },    
 
     fetchFail: (state) => {
