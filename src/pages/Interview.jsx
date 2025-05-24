@@ -132,8 +132,8 @@ After that, do not say anything else.`,
       Please analyze the candidate’s performance and return a JSON object with the following structure:
       {
         "score": number,
-        "strongSides": string[], // A clear paragraph describing strengths
-        "weaknesses": string[]  // A clear paragraph describing weaknesses
+        "strongSides": string[], // A clear describtion for strengths
+        "weaknesses": string[]  // A clear describtion for weaknesses
         "position": string  // format: "Job Title - Company" - Derive the job title and company name from the job description. If the company name is not available, only use the most suitable job title.
 
       }
