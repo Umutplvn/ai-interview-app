@@ -7,7 +7,7 @@
     border-radius: 8px;
     height: 80%;
     margin-top: 5rem;
-    font-family:serif;
+    font-family: "Poppins", sans-serif;
   }
   
   .profile-interviewItem {
@@ -100,6 +100,45 @@
     background-color: #d13e3e;
     box-shadow: 0 2px 5px rgba(255, 38, 38, 0.3);
   }
+
+  .gauge {
+    width: 200px;
+    height: 100px;
+    margin: 40px auto;
+  }
+  .gauge__body {
+    width: 100%;
+    height: 100%;
+    background: #eee;
+    border-top-left-radius: 100px;
+    border-top-right-radius: 100px;
+    overflow: hidden;
+    position: relative;
+  }
+  .gauge__fill {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #3fa34d;
+    transform-origin: center top;
+    transition: transform 0.2s ease-out;
+  }
+  .gauge__cover {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    font-weight: bold;
+    background: none;
+  }
+  
   
   
   @keyframes fadeInScale {

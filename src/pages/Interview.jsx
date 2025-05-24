@@ -20,6 +20,8 @@ const Interview = () => {
     apiKey: process.env.REACT_APP_GOOGLE_API_KEY
   });
   
+  const interviewData = localStorage.getItem("InterviewData");
+  const { resume, description } = JSON.parse(interviewData);
 
 
 
@@ -61,13 +63,11 @@ const Interview = () => {
   const startInterview = async () => {
     setStatus("Ringing");
     const vapi = vapiRef.current;
-    const interviewData = localStorage.getItem("InterviewData");
     if (!interviewData) {
       alert("InterviewData not found in localStorage.");
       return;
     }
 
-    const { resume, description } = JSON.parse(interviewData);
 
 
     await vapi.start({
@@ -119,18 +119,22 @@ After that, do not say anything else.`,
 
     //! Gemini
     const response = await ai.models.generateContent({
+      
       model: "gemini-2.0-flash",
       contents: `
       You are an expert job interviewer and evaluator.
       Here is the transcript of an interview with a candidate:
       ${transcriptLog}
+
+      Here is the job description:
+      ${description}
     
       Please analyze the candidate’s performance and return a JSON object with the following structure:
       {
         "score": number,
         "strongSides": string[], // A clear paragraph describing strengths
         "weaknesses": string[]  // A clear paragraph describing weaknesses
-        "position": string[]  // format: "Job Title - Company" - Derive the job title and company name from the job description. If the company name is not available, only use the most suitable job title.
+        "position": string  // format: "Job Title - Company" - Derive the job title and company name from the job description. If the company name is not available, only use the most suitable job title.
 
       }
       Only output the JSON object, no extra text.
