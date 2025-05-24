@@ -4,6 +4,7 @@ import { db } from '../firebase/firebaseConfig';
 import { toast } from 'react-hot-toast';
 import '../styles/Profile.css';
 import { deleteDoc, doc } from "firebase/firestore";
+import Gauge from '../components/Gauge';
 
 interface InterviewData {
   id: string;
@@ -94,7 +95,7 @@ const Profile: React.FC = () => {
             ? interview.position.slice(0, 30) + "..."
             : interview.position}</h4>
 
-          <h4 style={{ width: '25%', maxWidth:"4.5rem" }}>  Score: {interview.score}</h4>
+          <Gauge value={interview.score} max={100} size={70} />
 
         </div>
       ))}
