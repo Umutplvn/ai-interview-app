@@ -5,8 +5,9 @@ import { toast } from 'react-hot-toast';
 import '../styles/Profile.css';
 import { deleteDoc, doc } from "firebase/firestore";
 import Gauge from '../components/Gauge';
-import { getAuth } from 'firebase/auth';
+import { getAuth, deleteUser } from "firebase/auth";
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 interface InterviewData {
   id: string;
@@ -25,6 +26,7 @@ const Profile: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const userId = useSelector((state: any) => state.auth.userId);
+   const navigate=useNavigate()
 
   useEffect(() => {
     if (!userId) {
@@ -33,7 +35,6 @@ const Profile: React.FC = () => {
     }
     const fetchInterviews = async () => {
 
-      console.log(userId);
       try {
         const q = query(
           collection(db, "interviewData"),
@@ -74,11 +75,41 @@ const Profile: React.FC = () => {
     }
   };
 
-  const handleAccountDelete = () => {
-    setShowDeleteModal(false);
+  
 
-    toast.success("Account deleted!"); 
-  };
+const handleAccountDelete = async () => {
+  setShowDeleteModal(false);
+  const auth = getAuth();
+  const user = auth.currentUser;
+  if (!user) {
+    toast.error("No user is logged in.");
+    return;
+  }
+  try {
+    const q = query(
+      collection(db, "interviewData"),
+      where("userId", "==", userId)
+    );
+    const querySnapshot = await getDocs(q);
+
+    const deletePromises = querySnapshot.docs.map((docItem) =>
+      deleteDoc(doc(db, "interviewData", docItem.id))
+    );
+    await Promise.all(deletePromises);
+    await deleteUser(user);
+
+    toast.success("We've successfully deleted your account.");
+    navigate('/login')
+  } catch (error: any) {
+    console.error("Account deletion error:", error);
+    if (error.code === "auth/requires-recent-login") {
+      toast.error("Please re-login before deleting your account.");
+    } else {
+      toast.error("An error occurred while deleting the account.");
+    }
+  }
+};
+
 
 
 

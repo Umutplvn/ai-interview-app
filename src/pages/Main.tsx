@@ -31,7 +31,6 @@ const Main: React.FC = () => {
   const handleContinue = () => {
     localStorage.setItem("InterviewData", JSON.stringify(data));
     navigate('/interview');
-    console.log(data);
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

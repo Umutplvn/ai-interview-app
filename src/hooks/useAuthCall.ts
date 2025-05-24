@@ -21,6 +21,7 @@ const useAuthCall = () => {
   const dispatch = useDispatch();
 
   const getFirebaseErrorMessage = (code: string): string => {
+    console.log(code);
     switch (code) {
       case "auth/user-not-found":
         return "No user found with this email.";
@@ -32,6 +33,8 @@ const useAuthCall = () => {
         return "Password should be at least 6 characters.";
       case "auth/invalid-email":
         return "Invalid email address.";
+      case "auth/invalid-credential":
+        return "Incorrect email or password.";
       default:
         return "Something went wrong. Please try again.";
     }
