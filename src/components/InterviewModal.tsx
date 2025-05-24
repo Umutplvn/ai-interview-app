@@ -6,6 +6,7 @@ import { db } from '../firebase/firebaseConfig'
 import { serverTimestamp } from "firebase/firestore";
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { auth } from '../firebase/firebaseConfig'; 
 
 interface Review {
   score: number;
@@ -68,8 +69,15 @@ const InterviewModal: React.FC<InterviewModalProps> = ({ showModal, onClose, rev
 
   const addData = async () => {
     if (!parsedReview) return;
+
+    const user = auth.currentUser;
+    if (!user) {
+      toast.error("You must be logged in to save data.");
+      return;
+    }
+
     try {
-      const docRef = await addDoc(collection(db, "interviewData"), { ...parsedReview, createdAt: serverTimestamp() });
+      const docRef = await addDoc(collection(db, "interviewData"), { ...parsedReview,  userId: user.uid, createdAt: serverTimestamp() });
       toast.success("Result added to profile!");
       navigate('/main')
     } catch (e) {
