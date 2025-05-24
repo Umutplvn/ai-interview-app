@@ -74,6 +74,7 @@ const Profile: React.FC = () => {
   return (
     <div className="profile-container">
       <h2>Interview Results</h2>
+      
       {interviews.length === 0 && 
       <div>
         <br /> <br /> <br />

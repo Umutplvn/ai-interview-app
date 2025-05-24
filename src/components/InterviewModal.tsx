@@ -122,7 +122,7 @@ const InterviewModal: React.FC<InterviewModalProps> = ({ showModal, onClose, rev
               </div>
             </>
           ) : (
-            <div style={{ width: "100%", height: "100%" }}>
+            <div style={{ width: "100%", height: "100%", display:'flex', justifyContent:"center", alignItems:'center' }}>
 
               <img src={loading} style={{ width: "5rem", marginTop: "4rem" }} alt="" />
             </div>

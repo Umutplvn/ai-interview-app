@@ -130,7 +130,8 @@ After that, do not say anything else.`,
         "score": number,
         "strongSides": string[], // A clear paragraph describing strengths
         "weaknesses": string[]  // A clear paragraph describing weaknesses
-        "position": string  // format: "Job Title - Company"
+        "position": string  // format: "Job Title - Company" - Derive the job title and company name from the job description. If the company name is not available, only use the most suitable job title.
+
       }
       Only output the JSON object, no extra text.
       `,
